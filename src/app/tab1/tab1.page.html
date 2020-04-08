@@ -12,10 +12,31 @@
       <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <h1> This is Tab 1!</h1>
-  myarray=["hello","goodbye"]
-  numbers = [1,2,3,4,5]
-  <ion-button *ngFor="let num of numbers"> 1 </ion-button>
+  <div id="entry">
+  <h2> Welcome to this application to track your Medication</h2>
+  <h2>Please login below or Register for an account!</h2>
+  
+  </div>
+  <div id="boxes">
+  <h2>Username</h2>
+  <ion-item> 
+    <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername">
+    </ion-input>
+  </ion-item>
+  <h2>Password</h2>
+  <ion-item>
+    <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword">
+      
+  </ion-input>
+  </ion-item>
+ 
+  </div>
+  <div id="buttons">
+    <div id="login">
+  <ion-button (click)="onLogin" expand="block" size="medium"> Login </ion-button>
+  </div>
+  <ion-button expand="block" size="medium">Register</ion-button>
+  </div>
+  
   
 </ion-content>
