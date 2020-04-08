@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Medicines
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,6 +12,28 @@
       <ion-title size="large">Tab 2</ion-title>
     </ion-toolbar>
   </ion-header>
+  
+  
+  <div id="container">
+    index=0
+  <ion-item *ngFor="let med of medicines"> 
+    <div id="medicine">
+      {{med}}
+    </div> 
+    
+      <div id="I-Button">
+        <ion-button size="large" (click)="onInfoPress(index, med, medicines)">
+          <ion-icon name="information-circle"></ion-icon>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+        </ion-button>
+      </div>
+      <div id="Add-Button">
+        <ion-button size="large">
+        <ion-icon name="add-circle"></ion-icon>
+        </ion-button>
+      </div>
+    
+  </ion-item>
+  </div>
+  
 </ion-content>
