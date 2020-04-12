@@ -12,31 +12,42 @@
       <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
-  <div id="entry">
-  <h2> Welcome to this application to track your Medication</h2>
-  <h2>Please login below or Register for an account!</h2>
-  
+  <div id="loginscreen">
+    <div id="entry">
+      <h2> Welcome to this application to track your Medication</h2>
+      <h2>Please login below or Register for an account!</h2>
+      <h3>Please note if you do not login you may not have access to certain features of the app!</h3>
+
+    </div>
+    <div id="boxes">
+      <h2>Username</h2>
+      <ion-item>
+        <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername">
+        </ion-input>
+      </ion-item>
+      <h2>Password</h2>
+      <ion-item>
+        <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword">
+
+        </ion-input>
+      </ion-item>
+
+    </div>
+    <div id="buttons">
+      <div id="login">
+        <ion-button (click)="onLogin()" expand="block" size="medium">
+          Login
+        </ion-button>
+      </div>
+      <ion-button (click)="presentSignUp()" expand="block" size="medium">
+        Register
+      </ion-button>
+    </div>
   </div>
-  <div id="boxes">
-  <h2>Username</h2>
-  <ion-item> 
-    <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername">
-    </ion-input>
-  </ion-item>
-  <h2>Password</h2>
-  <ion-item>
-    <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword">
-      
-  </ion-input>
-  </ion-item>
- 
+  <div id="test">
+    <ion-button (click)="disappear()">This is a test</ion-button>
   </div>
-  <div id="buttons">
-    <div id="login">
-  <ion-button (click)="onLogin" expand="block" size="medium"> Login </ion-button>
+  <div hidden id="profile">
+    <p>Welcome to your profile</p>
   </div>
-  <ion-button expand="block" size="medium">Register</ion-button>
-  </div>
-  
-  
 </ion-content>

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Medicines
+      Medicine
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,28 +12,44 @@
       <ion-title size="large">Tab 2</ion-title>
     </ion-toolbar>
   </ion-header>
-  
-  
+
+
   <div id="container">
-    index=0
-  <ion-item *ngFor="let med of medicines"> 
-    <div id="medicine">
-      {{med}}
-    </div> 
-    
+    <ion-item *ngFor="let med of medicines">
+      <div id="medicine">
+        {{med.name}}
+      </div>
+
       <div id="I-Button">
-        <ion-button size="large" (click)="onInfoPress(index, med, medicines)">
-          <ion-icon name="information-circle"></ion-icon>
+        <ion-button size="large" (click)="onInfoPress(index, med, medicines,descriptions)">
+          <ion-icon name="information-circle-outline"></ion-icon>
 
         </ion-button>
       </div>
-      <div id="Add-Button">
+      <div id="Add-Button" (click)="onAddPress(med)">
         <ion-button size="large">
-        <ion-icon name="add-circle"></ion-icon>
+          <ion-icon name="add-circle-outline"></ion-icon>
         </ion-button>
       </div>
-    
-  </ion-item>
+    </ion-item>
+    <ion-item *ngFor="let save of savedMedicine">
+      <div id="save">
+        {{save.name}}
+      </div>
+
+      <div id="Info-Button">
+        <ion-button size="large" (click)="onInfoPress(index, med, medicines,descriptions)">
+          <ion-icon name="information-circle-outline"></ion-icon>
+
+        </ion-button>
+      </div>
+      <div id="Addition-Button" (click)="onAddPress(med)">
+        <ion-button size="large">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+    <ion-button (click)="newDrug()" expand="block" size="large">Add new medicine</ion-button>
   </div>
-  
+
 </ion-content>
