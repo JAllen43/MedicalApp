@@ -8,6 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { Tab2PageModule } from './tab2/tab2.module';
 
 @NgModule({
   declarations: [AppComponent],

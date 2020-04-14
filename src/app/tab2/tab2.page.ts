@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import {FormsModule} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
+import { $ } from 'protractor';
 
 @Component({
   selector: 'app-tab2',
@@ -10,17 +11,20 @@ import {FormsModule} from '@angular/forms';
 })
 export class Tab2Page {
   value = 0;
-  addmedicine="";
-  adddescription="";
-  savedMedicine=[];
-  add=true;
+  addmedicine = "";
+  adddescription = "";
+  savedMedicine = [];
+  add = true;
   determine: string;
+  yellow = "Hallelujah";
+  toggleswitch = "No";
+  index=0;
   //
   medicines = [
-      {"name":"blue inhaler", "desc":"Use it throughout the day"},
-      {"name": "brown inhaler", "desc":"Use it at the beginning and end of everyday"}
-    ];
-  descriptions = ["This is for use whenever you feel chesty", "This should be used at the start and end of everyday"];
+    { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
+    { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
+  ];
+  
   //
   onButtonPress(med) {
     console.log(med)
@@ -40,8 +44,8 @@ export class Tab2Page {
 
   }
 
-  
-  async medAlert(){
+
+  async medAlert() {
     const alert = await this.alertController.create({
       header: "Alert",
       subHeader: "Common Drug Entered",
@@ -57,84 +61,106 @@ export class Tab2Page {
   onAddPress(med) {
     this.savedMedicine.push(med);
     console.log(this.savedMedicine);
-
-    //for (let med of this.medicines){
-    //  if ()
-    //}
-    //let med:any = new Object();
-    //med["name"] = {{med.name}};
-    //med["desc"] = med;
-    //this.savedMedicine.push(med)
-    //console.log("The updated saved array is: ", this.savedMedicine)
-    //
   }
-  
-//Alert for signing up new drug
-async newDrug() {
-  const alert = await this.alertController.create({
-    backdropDismiss: false,
-    header: 'New Drug',
-    inputs: [
-      {
-        name: 'drugName',
-        type: 'text',
-        placeholder: 'Enter your drug name here'
+
+
+
+  //Alert for signing up new drug
+  async newDrug() {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'New Drug',
+      inputs: [
+        {
+          name: 'drugName',
+          type: 'text',
+          placeholder: 'Enter your drug name here'
+        },
+        {
+          name: 'drugDesc',
+          type: 'text',
+          placeholder: 'Enter your drug description here'
+        }],
+      buttons: [{
+
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.determine = 'Cancel';
+        }
       },
       {
-        name: 'drugDesc',
-        type: 'text',
-        placeholder: 'Enter your drug description here'
-      }],
-    buttons: [{
-
-      text: 'Cancel',
-      role: 'cancel',
-      handler: () => {
-        console.log('Confirm Cancel');
-        this.determine = 'Cancel';
+        text: "Ok",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.determine = 'Ok';
+        }
       }
-    },
-    {
-      text: "Ok",
-      role: 'Ok',
-      handler: () => {
-        console.log('Confirm Ok');
-        this.determine = 'Ok';
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    console.log(result);
+    console.log("This is the role: " + result.data.values.drugName);
+    console.log("This is the first userLogins ", this.medicines);
+    if (this.determine == "Ok") {
+      let newEntry: any = new Object();
+      newEntry["name"] = result.data.values.drugName;
+      newEntry["desc"] = result.data.values.drugDesc;
+      for (let med1 of this.medicines) {
+        if (newEntry["name"] == med1["name"] || newEntry["name"] == "") {
+          this.add = false;
+          this.medAlert();
+          break;
+        }
+
+
+      }
+      if (this.add == true) {
+        this.medicines.push(newEntry);
+      }
+      console.log("This is the updated userLogins ", this.medicines);
+    }
+
+
+
+  }
+
+  testing(med) {
+    console.log("This is the array before: ", this.savedMedicine);
+    
+    //this.savedName=med.name;
+    for (let med1 of this.medicines) {
+      if (med1["name"] == med) {
+        console.log("This is the switches toggle: ", med1["toggleswitch"])
+        if (med1["toggleswitch"] == "No") {
+          med1["toggleswitch"] = "Yes";
+          console.log("The switch is now on! ", med1)
+          this.savedMedicine.push(med1);
+          
+        }
+        else {
+          med1["toggleswitch"] = "No";
+          console.log("Med name is ", med1);
+          this.index=this.savedMedicine.indexOf(med1);
+          console.log(this.index);
+          this.savedMedicine.splice(this.index, 1);
+        }
       }
     }
-    ],
-
-  });
-  await alert.present();
-  let result = await alert.onDidDismiss();
-  console.log(result);
-  console.log("This is the role: " + result.data.values.drugName);
-  console.log("This is the first userLogins ", this.medicines);
-  if (this.determine == "Ok") {
-    let newEntry: any = new Object();
-    newEntry["name"] = result.data.values.drugName;
-    newEntry["desc"] = result.data.values.drugDesc;
-    for (let med1 of this.medicines){
-      if(newEntry["name"]==med1["name"] || newEntry["name"]==""){
-        this.add=false;
-        this.medAlert();
-        break;
-      }
+    console.log("This is the array after: ", this.savedMedicine);
 
 
-    }
-    if(this.add==true){
-      this.medicines.push(newEntry);
-    }
-    console.log("This is the updated userLogins ", this.medicines);
+
   }
 
 
-
-}
-
-
-
+  isToggleOn() {
+    console.log(this.toggleswitch);
+  }
 
   constructor(private router: Router, public alertController: AlertController) { }
 

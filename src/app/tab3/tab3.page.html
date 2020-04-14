@@ -12,13 +12,14 @@
       <ion-title size="large">Tab 3</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-button>
+  <ion-button (click)="display()">
     Show savedMedicine
   </ion-button>
-  <ion-item *ngFor="let save of savedMedicine">
-  save
+  <ion-item *ngFor="let test of savedArray">
+    {{test}}
+
   </ion-item>
-  
+  <ion-button (click)="retrieveItem()">Retrieve</ion-button>
   
 
 

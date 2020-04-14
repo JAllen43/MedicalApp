@@ -18,6 +18,7 @@
     <ion-item *ngFor="let med of medicines">
       <div id="medicine">
         {{med.name}}
+        {{med.toggleswitch}}
       </div>
 
       <div id="I-Button">
@@ -26,30 +27,16 @@
 
         </ion-button>
       </div>
-      <div id="Add-Button" (click)="onAddPress(med)">
-        <ion-button size="large">
-          <ion-icon name="add-circle-outline"></ion-icon>
-        </ion-button>
+      
+      <div id="Add-Button">
+        <ion-toggle color="primary" ([ngModel])="toggleswitch" (click)=testing(med.name)></ion-toggle>
       </div>
+    
     </ion-item>
-    <ion-item *ngFor="let save of savedMedicine">
-      <div id="save">
-        {{save.name}}
-      </div>
-
-      <div id="Info-Button">
-        <ion-button size="large" (click)="onInfoPress(index, med, medicines,descriptions)">
-          <ion-icon name="information-circle-outline"></ion-icon>
-
-        </ion-button>
-      </div>
-      <div id="Addition-Button" (click)="onAddPress(med)">
-        <ion-button size="large">
-          <ion-icon name="add-circle-outline"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    
     <ion-button (click)="newDrug()" expand="block" size="large">Add new medicine</ion-button>
   </div>
-
+  <ion-button (click)="isToggleOn()">
+    Click me
+  </ion-button>
 </ion-content>
