@@ -6,37 +6,33 @@ import { Component } from '@angular/core';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-  currentUser="test";
-  display1: any;
-  savedArray: Array<string>;
-  userLogin = [
-    { "username": "test", "password": "test", "dob": "20/02/2020", "saved": ["apples", "pears"]}
-  ];
-  test = "0,1";
-  array = [this.test];
-  test2:any;
+  displayArray: any = [];
+  user: any;
   retrieveData: any;
-  
 
 
-  display(){
-    for (let i of this.userLogin){
-      if(i.username==this.currentUser){
-        console.log("Success");
-        this.savedArray=i["saved"];
-        console.log(i["saved"]);
-        return this.savedArray;
-        console.log(this.display1);
-      }
-      }
-    console.log(this.userLogin["username"]);
+
+
+  //Updates the Tracker list to show which medications are to be tracked
+  updateItems() {
+    this.retrieveItem()
+    for (let element of this.user) {
+      console.log("This is the element: ", element)
+      console.log("This is the tracked Medication of element:", element["trackedMedicine"])
+      this.displayArray = element["trackedMedicine"]
+      console.log(this.displayArray)
+
+    }
   }
 
-  retrieveItem(){
-    this.retrieveData=localStorage.getItem("test");
-    this.test2=JSON.parse(this.retrieveData);
-    console.log(this.test2);
+  //Used to retrieve the current user and the relevant data from local Storage
+  retrieveItem() {
+    this.retrieveData = localStorage.getItem("currentUser");
+    console.log(this.retrieveData)
+    this.user = JSON.parse(this.retrieveData);
+    console.log("This is current user: ", this.user);
+
   }
-  
+
 
 }

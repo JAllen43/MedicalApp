@@ -10,30 +10,22 @@ import { $ } from 'protractor';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-  value = 0;
-  addmedicine = "";
-  adddescription = "";
+  user: any;
+  retrieveData: any;
+  index = 0;
   savedMedicine = [];
   add = true;
   determine: string;
-  yellow = "Hallelujah";
   toggleswitch = "No";
-  index=0;
   //
   medicines = [
     { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
     { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
   ];
-  
+
   //
-  onButtonPress(med) {
-    console.log(med)
-  }
-  onInfoPress(index, med, medicines, descriptions) {
-    index = this.medicines.indexOf(med)
-    console.log(medicines[index])
-    console.log(descriptions[index])
-    console.log(descriptions);
+  onInfoPress(med) {
+    this.index = this.medicines.indexOf(med)
     let navigationExtras: NavigationExtras = {
       queryParams: {
         special: med.desc
@@ -44,7 +36,7 @@ export class Tab2Page {
 
   }
 
-
+  //Alert to let the user know that they have entered a Drug that already exists on the application
   async medAlert() {
     const alert = await this.alertController.create({
       header: "Alert",
@@ -58,6 +50,7 @@ export class Tab2Page {
     console.log(result);
 
   }
+
   onAddPress(med) {
     this.savedMedicine.push(med);
     console.log(this.savedMedicine);
@@ -70,6 +63,7 @@ export class Tab2Page {
     const alert = await this.alertController.create({
       backdropDismiss: false,
       header: 'New Drug',
+      //Gives input boxes to be used
       inputs: [
         {
           name: 'drugName',
@@ -81,6 +75,7 @@ export class Tab2Page {
           type: 'text',
           placeholder: 'Enter your drug description here'
         }],
+      //Sets up "Ok" and "Cancel" Buttons to have desired effect when clicked on
       buttons: [{
 
         text: 'Cancel',
@@ -103,13 +98,17 @@ export class Tab2Page {
     });
     await alert.present();
     let result = await alert.onDidDismiss();
+    this.retrieveItem()
     console.log(result);
     console.log("This is the role: " + result.data.values.drugName);
     console.log("This is the first userLogins ", this.medicines);
+    //Checks whether the "Ok" button was pressed. As a result it will enter the newEntry into the medicine array
     if (this.determine == "Ok") {
       let newEntry: any = new Object();
       newEntry["name"] = result.data.values.drugName;
       newEntry["desc"] = result.data.values.drugDesc;
+      newEntry["toggleswitch"] = "No"
+      //Checks whether this medicine is a duplicate or has no name, in which case an alert will be activated
       for (let med1 of this.medicines) {
         if (newEntry["name"] == med1["name"] || newEntry["name"] == "") {
           this.add = false;
@@ -120,7 +119,14 @@ export class Tab2Page {
 
       }
       if (this.add == true) {
+        //newEntry pushed onto array
         this.medicines.push(newEntry);
+        //Updated array is assigned to the user profile that is currently active
+        for (let i of this.user) {
+          console.log("This is medication: ", i["Medication"])
+          i["Medication"] = this.medicines
+          console.log("This is second medication: ", i["Medication"])
+        }
       }
       console.log("This is the updated userLogins ", this.medicines);
     }
@@ -128,35 +134,54 @@ export class Tab2Page {
 
 
   }
-
+  //Allows the user to toggle the switch and save medication into their own array
   testing(med) {
     console.log("This is the array before: ", this.savedMedicine);
-    
-    //this.savedName=med.name;
+
+    //Scans array of medicine to find which switch has been activatedthis.savedName=med.name;
     for (let med1 of this.medicines) {
+      console.log("This is med1 name:", med1["name"])
       if (med1["name"] == med) {
-        console.log("This is the switches toggle: ", med1["toggleswitch"])
+        console.log("This is the switches toggle:", med1["toggleswitch"])
+        //Selects which action needs to be carried out depending on "Yes" or "No" decision
         if (med1["toggleswitch"] == "No") {
           med1["toggleswitch"] = "Yes";
           console.log("The switch is now on! ", med1)
           this.savedMedicine.push(med1);
-          
         }
         else {
           med1["toggleswitch"] = "No";
           console.log("Med name is ", med1);
-          this.index=this.savedMedicine.indexOf(med1);
+          this.index = this.savedMedicine.indexOf(med1);
           console.log(this.index);
           this.savedMedicine.splice(this.index, 1);
         }
       }
     }
-    console.log("This is the array after: ", this.savedMedicine);
+    //Retrieves the user profile
+    this.retrieveItem()
+    //Goes through the user profile to separate the sections to save the required medication to the correct place
+    for (let i of this.user) {
+      i["trackedMedicine"] = this.savedMedicine
+    }
+    console.log("This is the user profile: ", this.user)
+    //Saves recently updated user profile to local Storage
+    this.saveItem(this.user)
+  }
 
-
+  saveItem(profile) {
+    console.log(profile);
+    localStorage.setItem("currentUser", JSON.stringify(profile));
 
   }
 
+  retrieveItem() {
+    this.retrieveData = localStorage.getItem("currentUser");
+    console.log(this.retrieveData)
+    this.user = JSON.parse(this.retrieveData);
+    console.log(this.user);
+
+  }
 
   isToggleOn() {
     console.log(this.toggleswitch);

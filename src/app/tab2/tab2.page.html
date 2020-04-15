@@ -18,11 +18,10 @@
     <ion-item *ngFor="let med of medicines">
       <div id="medicine">
         {{med.name}}
-        {{med.toggleswitch}}
       </div>
 
       <div id="I-Button">
-        <ion-button size="large" (click)="onInfoPress(index, med, medicines,descriptions)">
+        <ion-button size="large" (click)="onInfoPress(med, medicines,descriptions)">
           <ion-icon name="information-circle-outline"></ion-icon>
 
         </ion-button>
