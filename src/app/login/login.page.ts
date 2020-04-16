@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 
-@Component({
-  selector: 'app-tab1',
-  templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
-})
-export class Tab1Page {
 
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
+})
+
+
+
+
+export class LoginPage implements OnInit {
   inputtedUsername: string;
   inputtedPassword: string;
   determine: string;
@@ -17,6 +21,7 @@ export class Tab1Page {
   profile: any = [];
   test2: any;
   retrieveData: any;
+
   currentUser = "test";
   savedList: any = [];
   add: any;
@@ -28,11 +33,7 @@ export class Tab1Page {
     { "username": "test", "password": "test", "dob": "20/02/2020", "Medication": this.medicines, "trackedMedicine": [] }
   ];
 
-
-
-  //Constructor used to import Alert Controller to allow Alerts to be displayed
   constructor(public alertController: AlertController) { }
-
   //Imports keywords using async and allows an alert to be created to warn of incorrect Username/Password being entered
   async alertPresent() {
     const alert = await this.alertController.create({
@@ -78,10 +79,11 @@ export class Tab1Page {
     this.retrieveData = localStorage.getItem("userLogins");
     this.userLogin = JSON.parse(this.retrieveData);
     console.log("This is the retrieve function being called: ", this.userLogin);
-
   }
   //Checks if user login details are valid
   async onLogin() {
+    console.log("This is user Login: ", this.userLogin)
+    this.saveUserLogin(this.userLogin)
     for (let i of this.userLogin) {
 
       if (i.username == this.inputtedUsername) {
@@ -89,11 +91,12 @@ export class Tab1Page {
           console.log("Gained entry")
           this.profile.push(i)
           console.log("This is profile: ", this.profile)
-         // this.saveUserLogin(),
           this.saveItem(this.profile)
           console.log("Profile has been saved")
+          window.location.reload()
           console.log(this.profile["Medication"])
           console.log(i["Medication"])
+          
           //Stores currentuser on local storage to allow ease of access for which user is operating the application
           //localStorage.setItem("currentUser", this.username);
           //this.displayProfile()
@@ -108,8 +111,8 @@ export class Tab1Page {
       }
     }
   }
-  //Allows Login Screen to be hidden and Profile Screen to be shown
-  displayProfile() {
+   //Allows Login Screen to be hidden and Profile Screen to be shown
+   displayProfile() {
     document.getElementById('loginscreen').hidden = true;
     document.getElementById('profile').hidden = false;
 
@@ -123,17 +126,18 @@ export class Tab1Page {
         {
           name: 'uName',
           type: 'text',
-          placeholder: 'Enter your username here'
+          placeholder: 'Placeholder 1'
         },
         {
           name: 'pWord',
           type: 'text',
-          placeholder: 'Enter your password here'
+          placeholder: 'Placeholder2'
         },
         {
           name: 'dob',
           type: 'date',
-          max: '2010-01-01'
+          min: '2017-03-01',
+          max: '2018-01-12'
         }
       ],
       buttons: [{
@@ -164,8 +168,7 @@ export class Tab1Page {
     if (this.determine == "Ok") {
       let prof: any = new Object();
       prof["username"] = result.data.values.uName;
-      prof["password"] = result.data.values.pWord;
-      //BEEN ALTERED
+      prof["password"] = result.data.values.pWord;  
       prof["dob"]=result.data.values.dob;
       prof["Medication"]=this.medicines;
       prof["trackedMedicine"]=[];
@@ -183,9 +186,9 @@ export class Tab1Page {
   }
   //Saves Item to local storage, depending on the profile that is entered into it
   saveItem(profile) {
-    console.log(profile);
+    
     localStorage.setItem("currentUser", JSON.stringify(profile));
-
+    console.log("This is the profile to be saved: ", console.log(profile))
   }
 
   //Retrieves data from the local storage depending on the profile that is present
@@ -198,5 +201,7 @@ export class Tab1Page {
     document.getElementById('loginscreen').hidden = true;
   };
 
+  ngOnInit() {
+  }
 
 }

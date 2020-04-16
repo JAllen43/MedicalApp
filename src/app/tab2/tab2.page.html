@@ -15,6 +15,7 @@
 
 
   <div id="container">
+    <ion-searchbar></ion-searchbar>
     <ion-item *ngFor="let med of medicines">
       <div id="medicine">
         {{med.name}}
@@ -28,7 +29,7 @@
       </div>
       
       <div id="Add-Button">
-        <ion-toggle color="primary" ([ngModel])="toggleswitch" (click)=testing(med.name)></ion-toggle>
+        <ion-toggle color="primary" ([ngModel])="toggleswitch" (click)=toggled(med.name)></ion-toggle>
       </div>
     
     </ion-item>

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Home
+      Help Screen
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -12,49 +12,75 @@
       <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
-  <div id="loginscreen">
-    <div id="entry">
-      <h2> Welcome to this application to track your Medication</h2>
-      <h2>Please login below or Register for an account!</h2>
-      <h3>Please note if you do not login you may not have access to certain features of the app!</h3>
 
-    </div>
-    <div id="boxes">
-      <h2>Username</h2>
+  <h1> Welcome to this app to track your Medication</h1>
+  <h2> Please find some pointers on how to use the app below:</h2>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Information Button</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content>
       <ion-item>
-        <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername">
-        </ion-input>
-      </ion-item>
-      <h2>Password</h2>
-      <ion-item>
-        <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword">
-
-        </ion-input>
-      </ion-item>
-
-    </div>
-    <div id="buttons">
-      <div id="login">
-        <ion-button (click)="onLogin()" expand="block" size="medium">
-          Login
+        <ion-button size="large">
+          <ion-icon size="large" name="information-circle-outline"></ion-icon>
         </ion-button>
-      </div>
-      <ion-button (click)="presentSignUp()" expand="block" size="medium">
-        Register
-      </ion-button>
-    </div>
-  </div>
-  <div id="test">
-    <ion-button (click)="saveItem()">Save</ion-button>
-    <ion-button (click)="retrieveItem()">Retrieve</ion-button>
-    <ion-button (click)="displayMed()">Display</ion-button>
-  </div>
-  <div id="MedList" *ngFor="let test of savedList">
-    {{test.name}}
+        <div id="paragraph">
+          <p> Pressing this button will display a description of the drug that it is listed under</p>
+        </div>
+      </ion-item>
 
-  </div>
-  <div hidden id="profile">
-    
-    <p>{{dob}}</p>
-  </div>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Adding Medicine to your Tracker</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+          
+            <div id="toggle">
+              <ion-toggle color="primary"></ion-toggle>
+            </div>
+
+          <div id="paragraph">
+            
+              <p> To add the relevant medicine to your Tracker, this toggle switch will need to be tapped upon so that
+                it
+                turns blue <br />
+                Items that appear in your tracked list can be used to set a timer and reminders of when medication is
+                required
+                to be taken
+              </p>
+            
+          </div>
+
+        </ion-item>
+      
+    </ion-card-content>
+
+
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Remove Medicine</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content>
+
+      <ion-item>
+        <ion-button size="large">
+          <ion-icon size="large" name="trash-outline"></ion-icon>
+        </ion-button>
+        <div id="paragraph">
+          <p> This allows you to remove the medicine from the relevant screen, whether it be deleting an entry after
+            finishing a course of medication or removing it from the application completely
+          </p>
+        </div>
+      </ion-item>
+    </ion-card-content>
+
+
+  </ion-card>
 </ion-content>

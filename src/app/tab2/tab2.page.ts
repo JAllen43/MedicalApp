@@ -135,10 +135,10 @@ export class Tab2Page {
 
   }
   //Allows the user to toggle the switch and save medication into their own array
-  testing(med) {
+  toggled(med) {
     console.log("This is the array before: ", this.savedMedicine);
 
-    //Scans array of medicine to find which switch has been activatedthis.savedName=med.name;
+    //Scans array of medicine to find which switch has been activated
     for (let med1 of this.medicines) {
       console.log("This is med1 name:", med1["name"])
       if (med1["name"] == med) {
