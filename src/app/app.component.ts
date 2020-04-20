@@ -12,7 +12,7 @@ import { LoginPage } from './login/login.page';
 })
 export class AppComponent {
   retrieveData: any;
-  user: any=[];
+  user: any = [];
   user1: any;
   authentication: any;
   backdropDismiss: false;
@@ -53,8 +53,8 @@ export class AppComponent {
       if (element["username"] == "") {
         this.modalCtrl.create({
           component: LoginPage,
-         backdropDismiss: false,
-        }).then(modal =>{
+          backdropDismiss: false,
+        }).then(modal => {
           this.loginModal = modal;
           modal.present();
         });
@@ -62,9 +62,11 @@ export class AppComponent {
 
 
       }
-      else{
-        if(this.loginModal){
-        this.loginModal.dismiss();
-        }}
-      }}
+      else {
+        if (this.loginModal) {
+          this.loginModal.dismiss();
+        }
+      }
+    }
+  }
 }

@@ -13,11 +13,15 @@ const routes: Routes = [
   {
     path: 'details',
     loadChildren: () => import('./details/details.module').then( m => m.DetailsPageModule)
-  },  {
+  },
+  {
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  }
-
+  },
+  {
+  path:'tab1',
+  loadChildren: ()=> import('./tab1/tab1.module').then(m=>m.Tab1PageModule)
+  },
 ];
 @NgModule({
   imports: [

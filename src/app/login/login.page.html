@@ -48,13 +48,13 @@
     <ion-button (click)="saveItem()">Save</ion-button>
     <ion-button (click)="retrieveItem()">Retrieve</ion-button>
     <ion-button (click)="displayMed()">Display</ion-button>
+    <ion-button (click)="deleteUserData()">Clear Data</ion-button>
   </div>
+  <ion-item *ngFor="let x of testArray">
+    {{x}} </ion-item>
   <div id="MedList" *ngFor="let test of savedList">
     {{test.name}}
 
   </div>
-  <div hidden id="profile">
-    
-    <p>{{dob}}</p>
-  </div>
+  
 </ion-content>

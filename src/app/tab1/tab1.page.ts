@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import {Router} from'@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page {
+export class Tab1Page implements OnInit {
 
   inputtedUsername: string;
   inputtedPassword: string;
@@ -24,15 +26,19 @@ export class Tab1Page {
     { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
     { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
   ];
-  userLogin = [
-    { "username": "test", "password": "test", "dob": "20/02/2020", "Medication": this.medicines, "trackedMedicine": [] }
-  ];
-
+  userLogin: any [];
+  
+  ngOnInit() {
+    this.loginAlertPresent()
+  }
 
 
   //Constructor used to import Alert Controller to allow Alerts to be displayed
-  constructor(public alertController: AlertController) { }
+  constructor(public alertController: AlertController, public navCtrl: NavController, private route: Router) { }
 
+  loginPageRoot(){
+    this.route.navigate(['/login'])
+  }
   //Imports keywords using async and allows an alert to be created to warn of incorrect Username/Password being entered
   async alertPresent() {
     const alert = await this.alertController.create({
@@ -197,6 +203,14 @@ export class Tab1Page {
   disappear() {
     document.getElementById('loginscreen').hidden = true;
   };
+  
+  async loginAlertPresent() {
+    const alert = await this.alertController.create({
+      header: "Register/Login!",
+      subHeader: "Make sure that you Register/Login before using the application, otherwise it won't work properly! The login button is at the top of this screen!",
+      message: "Please just do it you moron",
+      buttons: ['Dismiss']
+    });}
 
 
 }

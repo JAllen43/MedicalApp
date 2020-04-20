@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import{Router} from'@angular/router';
 
 
 @Component({
@@ -21,19 +22,21 @@ export class LoginPage implements OnInit {
   profile: any = [];
   test2: any;
   retrieveData: any;
+  addLogin: any;
+  counter = 0;
+  testArray = []
 
   currentUser = "test";
   savedList: any = [];
   add: any;
+  add1: boolean;
   medicines = [
     { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
     { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
   ];
-  userLogin = [
-    { "username": "test", "password": "test", "dob": "20/02/2020", "Medication": this.medicines, "trackedMedicine": [] }
-  ];
+  userLogin = [{"username:": "test", "password:": "test" }];
 
-  constructor(public alertController: AlertController) { }
+  constructor(public alertController: AlertController, private route: Router) { }
   //Imports keywords using async and allows an alert to be created to warn of incorrect Username/Password being entered
   async alertPresent() {
     const alert = await this.alertController.create({
@@ -48,77 +51,75 @@ export class LoginPage implements OnInit {
     console.log(result);
 
   }
-  //Add elements to a saved Array to display them on the screen
-  displayMed() {
-    console.log("hello")
-    this.savedList = [];
-    console.log("Saved List: ", this.savedList)
-    for (let med1 of this.userLogin) {
-      console.log("This is the profile", med1)
-      console.log("This is the username: ", med1.username);
-      if (med1["username"] == this.currentUser) {
-        for (let element of med1["Medication"]) {
-          console.log(element);
-          this.savedList.push(element);
-
-        }
-        med1
-      }
-    }
-    console.log(this.savedList);
 
 
-  }
+
   //Saving User Logins to the userLogins array
-  saveUserLogin(logins){
+  saveUserLogin(logins) {
     localStorage.setItem("userLogins", JSON.stringify(logins));
 
   }
   //Retrieving User Logins from the userLogins array
-  retrieveUserLogin(){
+  retrieveUserLogin() {
     this.retrieveData = localStorage.getItem("userLogins");
     this.userLogin = JSON.parse(this.retrieveData);
     console.log("This is the retrieve function being called: ", this.userLogin);
   }
+
+  validation() {
+
+  }
   //Checks if user login details are valid
   async onLogin() {
+    this.counter = 0;
+    this.retrieveUserLogin()
     console.log("This is user Login: ", this.userLogin)
-    this.saveUserLogin(this.userLogin)
     for (let i of this.userLogin) {
 
-      if (i.username == this.inputtedUsername) {
-        if (i.password == this.inputtedPassword) {
+      if (i["username"] == this.inputtedUsername) {
+        if (i["password"] == this.inputtedPassword) {
           console.log("Gained entry")
           this.profile.push(i)
           console.log("This is profile: ", this.profile)
           this.saveItem(this.profile)
           console.log("Profile has been saved")
-          window.location.reload()
+          //window.location.reload()
           console.log(this.profile["Medication"])
           console.log(i["Medication"])
-          
+          this.tab1PageRoot()
+
+
           //Stores currentuser on local storage to allow ease of access for which user is operating the application
           //localStorage.setItem("currentUser", this.username);
           //this.displayProfile()
         }
         else {
-          this.alertPresent();
+          if (this.counter != 1) {
+            this.counter = this.counter + 1
+            this.alertPresent();
+          }
+
         }
       }
 
       else {
-        this.alertPresent();
+        if (this.counter != 1) {
+          this.counter = this.counter + 1
+          this.alertPresent();
+        }
+
+
+
       }
     }
   }
-   //Allows Login Screen to be hidden and Profile Screen to be shown
-   displayProfile() {
-    document.getElementById('loginscreen').hidden = true;
-    document.getElementById('profile').hidden = false;
 
+tab1PageRoot(){
+    this.route.navigate(['./tab1'])
   }
   //Allows Alert to be used as Sign Up box
   async presentSignUp() {
+    this.add1 = false;
     const alert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Sign Up',
@@ -164,29 +165,43 @@ export class LoginPage implements OnInit {
     let result = await alert.onDidDismiss();
     console.log(result);
     console.log("This is the role: " + result.data.values.uName);
+    console.log("This is previous userLogin :", this.userLogin)
+    this.retrieveUserLogin()
+
     console.log("This is the first userLogins ", this.userLogin);
-    if (this.determine == "Ok") {
+    for (let element of this.userLogin) {
+      console.log("Element speaking: ", element)
+      console.log(element["username"])
+      console.log(result.data.values.uName)
+      if (element["username"] == result.data.values.uName) {
+        this.add1 = true;
+      }
+    }
+    if (this.determine == "Ok" && this.add1 != true) {
       let prof: any = new Object();
       prof["username"] = result.data.values.uName;
-      prof["password"] = result.data.values.pWord;  
-      prof["dob"]=result.data.values.dob;
-      prof["Medication"]=this.medicines;
-      prof["trackedMedicine"]=[];
+      prof["password"] = result.data.values.pWord;
+      prof["dob"] = result.data.values.dob;
+      prof["Medication"] = [];
+      prof["trackedMedicine"] = [];
       this.userLogin.push(prof);
       this.saveUserLogin(this.userLogin);
       this.retrieveUserLogin();
       console.log("This is the updated userLogins ", this.userLogin);
     }
+    else {
+      this.invalidLoginDetails()
+
+    }
+    console.log("NOT UPDATE USER LOGINS", this.userLogin)
 
 
 
   }
-  onRegister() {
 
-  }
   //Saves Item to local storage, depending on the profile that is entered into it
   saveItem(profile) {
-    
+
     localStorage.setItem("currentUser", JSON.stringify(profile));
     console.log("This is the profile to be saved: ", console.log(profile))
   }
@@ -200,8 +215,32 @@ export class LoginPage implements OnInit {
   disappear() {
     document.getElementById('loginscreen').hidden = true;
   };
+  deleteUserData() {
+    this.profile = []
+    console.log(this.profile)
+    this.userLogin = []
+    this.saveUserLogin(this.userLogin)
+    this.retrieveUserLogin()
+    console.log("This is the user Logins", this.userLogin)
+  }
+  async invalidLoginDetails() {
+    const alert = await this.alertController.create({
+      header: "Alert",
+      subHeader: "Username already taken",
+      message: "This username has already been taken, please try another username",
+      buttons: ['Dismiss']
+    });
 
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    console.log(result);
+
+  }
   ngOnInit() {
+    console.log("THIS IS ON INITIALISATION")
+    console.log(this.userLogin)
+    this.saveUserLogin(this.userLogin)
+    this.testArray = ["apples", "pears"]
   }
 
 }

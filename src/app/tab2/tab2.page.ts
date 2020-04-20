@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { $ } from 'protractor';
+import { $, element } from 'protractor';
 
 @Component({
   selector: 'app-tab2',
@@ -18,11 +18,22 @@ export class Tab2Page {
   determine: string;
   toggleswitch = "No";
   //
-  medicines = [
-    { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
-    { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
-  ];
 
+
+  medicines = ["hello","test"];
+
+  ngOnInit() {
+    console.log("THIS IS ON INITIALISATION")
+    this.retrieveItem()
+    console.log("On init: ", this.user)
+    for(let element of this.user){
+      this.medicines=element["Medication"]
+      }
+      console.log(this.medicines)
+    }
+
+  
+  
   //
   onInfoPress(med) {
     this.index = this.medicines.indexOf(med)
@@ -99,15 +110,14 @@ export class Tab2Page {
     await alert.present();
     let result = await alert.onDidDismiss();
     this.retrieveItem()
-    console.log(result);
-    console.log("This is the role: " + result.data.values.drugName);
-    console.log("This is the first userLogins ", this.medicines);
+    console.log("Before adding mediciine ", this.medicines);
     //Checks whether the "Ok" button was pressed. As a result it will enter the newEntry into the medicine array
     if (this.determine == "Ok") {
       let newEntry: any = new Object();
       newEntry["name"] = result.data.values.drugName;
       newEntry["desc"] = result.data.values.drugDesc;
       newEntry["toggleswitch"] = "No"
+      newEntry["timerTime"] = new Date();
       //Checks whether this medicine is a duplicate or has no name, in which case an alert will be activated
       for (let med1 of this.medicines) {
         if (newEntry["name"] == med1["name"] || newEntry["name"] == "") {
@@ -115,18 +125,21 @@ export class Tab2Page {
           this.medAlert();
           break;
         }
-
+    console.log("Added Drug medicines list", this.medicines);
 
       }
       if (this.add == true) {
         //newEntry pushed onto array
         this.medicines.push(newEntry);
+        console.log("This is old user: ", this.user)
         //Updated array is assigned to the user profile that is currently active
         for (let i of this.user) {
           console.log("This is medication: ", i["Medication"])
           i["Medication"] = this.medicines
           console.log("This is second medication: ", i["Medication"])
         }
+        console.log("This is updated user", this.user)
+        this.saveItem(this.user)
       }
       console.log("This is the updated userLogins ", this.medicines);
     }
@@ -143,6 +156,7 @@ export class Tab2Page {
       console.log("This is med1 name:", med1["name"])
       if (med1["name"] == med) {
         console.log("This is the switches toggle:", med1["toggleswitch"])
+
         //Selects which action needs to be carried out depending on "Yes" or "No" decision
         if (med1["toggleswitch"] == "No") {
           med1["toggleswitch"] = "Yes";
@@ -183,10 +197,38 @@ export class Tab2Page {
 
   }
 
-  isToggleOn() {
-    console.log(this.toggleswitch);
-  }
 
   constructor(private router: Router, public alertController: AlertController) { }
+  removeMed(med) {
+    this.retrieveItem()
+    for (let element of this.user) {
+      console.log("This is the elemenet medication: ", element["Medication"])
+      for (let x of element["Medication"]) {
 
+        //console.log(med)
+        if (x["name"] == med) {
+          console.log("X: ", x)
+          console.log("Med :", med)
+          console.log(element["Medication"])
+          this.index = element["Medication"].indexOf(x);
+          console.log(this.index)
+          element["Medication"].splice(this.index, 1);
+          this.medicines = element["Medication"];
+          console.log("This is medicines: ", this.medicines)
+
+        }
+
+      }
+
+      console.log(element["Medication"])
+      for (let i of this.user) {
+        i["Medication"] = element["Medication"]
+      }
+      console.log("This is user: ", this.user)
+    }
+    this.saveItem(this.user)
+
+
+
+  }
 }

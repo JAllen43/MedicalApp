@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Medicine
+      Medication
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -15,10 +15,13 @@
 
 
   <div id="container">
-    <ion-searchbar></ion-searchbar>
+    
     <ion-item *ngFor="let med of medicines">
       <div id="medicine">
         {{med.name}}
+      </div>
+      <div id="Remove Button"> 
+        <ion-button size ="large" (click)="removeMed(med.name)" color="danger"> <ion-icon name="trash-outline"></ion-icon></ion-button>
       </div>
 
       <div id="I-Button">
@@ -29,7 +32,7 @@
       </div>
       
       <div id="Add-Button">
-        <ion-toggle color="primary" ([ngModel])="toggleswitch" (click)=toggled(med.name)></ion-toggle>
+        <ion-toggle color="primary" ([ngModel])="toggleswitch" (click)=toggled(med.name) apple></ion-toggle>
       </div>
     
     </ion-item>

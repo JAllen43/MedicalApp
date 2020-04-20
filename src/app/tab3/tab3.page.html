@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      Tracker
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,21 +13,40 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-item *ngFor="let drug of displayArray">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{drug.name}}</ion-card-title>
-        <ion-card-subtitle>Description</ion-card-subtitle>
-          </ion-card-header>
-      <ion-card-content>
-        {{drug.desc}}
-      </ion-card-content>
-    </ion-card>
-    
 
-  </ion-item>
-  <ion-button (click)="updateItems()">Retrieve</ion-button>
+  <ion-card *ngFor="let drug of displayArray">
+    <ion-card-header>
+      <ion-card-title>{{drug.name}}</ion-card-title>
+      <ion-card-subtitle>Description</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      {{drug.desc}}
+      <h1>{{time | async}}</h1>
+
+      <div display="none">
+        <ion-button *ngIf="state === 'stop'" (click)="onClick(drug.name)">Start</ion-button>
+        <ion-button *ngIf="state === 'start'" (click)="stopTimer()">Stop</ion-button>
+      </div>
+      <ion-item>
+        <ion-label> Tap here to enter medication time</ion-label>
+        <ion-datetime [(ngModel)]="inputtedTime" display-format="HH:mm" picker-format="HH:mm" value="00:00">
+        </ion-datetime>
+        <ion-button (click)="datetime()">Load</ion-button>
+        <ion-button (click)="saveInputtedTime(drug.name)">Final Test</ion-button>
+      </ion-item>
+      
+    </ion-card-content>
+  </ion-card>
+  <ion-button (click)="scheduleNotif(1)"> schedulNotif </ion-button>
+
+
+
+
+
+
+  <ion-button (click)="updateItems()">Update Tracker List</ion-button>
   
+
 
 
 
