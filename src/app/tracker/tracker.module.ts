@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { Tab4PageRoutingModule } from './tab4-routing.module';
+import { TrackerPageRoutingModule } from './tracker-routing.module';
 
-import { Tab4Page } from './tab4.page';
+import { TrackerPage } from './tracker.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Tab4PageRoutingModule
+    TrackerPageRoutingModule
   ],
-  declarations: [Tab4Page]
+  declarations: [TrackerPage]
 })
-export class Tab4PageModule {}
+export class TrackerPageModule {}

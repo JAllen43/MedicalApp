@@ -1,5 +1,5 @@
 {
-  "name": "MedicalApp",
+  "name": "MedicalAppv2",
   "version": "0.0.1",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -19,20 +19,14 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
-    "@ionic-native/core": "^5.24.0",
-    "@ionic-native/local-notifications": "^5.24.0",
+    "@ionic-native/core": "^5.0.7",
     "@ionic-native/splash-screen": "^5.0.0",
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^5.0.0",
+    "@ionic/storage": "^2.2.0",
     "cordova-android": "^8.1.0",
-    "cordova-browser": "^6.0.0",
-    "cordova-ios": "^5.1.1",
-    "cordova-plugin-app-event": "^1.2.2",
-    "cordova-plugin-badge": "^0.8.8",
-    "cordova-plugin-local-notification": "^0.9.0-beta.2",
-    "cordova-plugin-local-notifications": "git+https://github.com/katzer/cordova-plugin-local-notifications.git#ios10",
+    "cordova-sqlite-storage": "^5.0.0",
     "core-js": "^2.5.4",
-    "moment": "^2.24.0",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
@@ -50,7 +44,7 @@
     "codelyzer": "^5.0.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
-    "cordova-plugin-ionic-webview": "^4.1.3",
+    "cordova-plugin-ionic-webview": "^4.2.0",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-whitelist": "^1.3.3",
@@ -69,6 +63,7 @@
   "description": "An Ionic project",
   "cordova": {
     "plugins": {
+      "cordova-sqlite-storage": {},
       "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
       "cordova-plugin-device": {},
@@ -76,12 +71,10 @@
       "cordova-plugin-ionic-webview": {
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
-      "cordova-plugin-ionic-keyboard": {},
-      "de.appplant.cordova.plugin.local-notification": {}
+      "cordova-plugin-ionic-keyboard": {}
     },
     "platforms": [
-      "ios",
-      "browser"
+      "android"
     ]
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { AlertController } from '@ionic/angular';
-import{Router} from'@angular/router';
 
 
 @Component({
@@ -8,118 +8,86 @@ import{Router} from'@angular/router';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-
-
-
-
 export class LoginPage implements OnInit {
+  userLogins: any = [];
+  counter: number;
   inputtedUsername: string;
   inputtedPassword: string;
-  determine: string;
-  backdropDismiss: any;
-  username: string;
-  dob: string;
+  decision: string;
+  add: boolean;
+  newUser: any;
   profile: any = [];
-  test2: any;
-  retrieveData: any;
-  addLogin: any;
-  counter = 0;
-  testArray = []
+  currentUser: any = [];;
+  activeUser = false;
+  delete = false;
+  updateCurrentUser: any=[];
 
-  currentUser = "test";
-  savedList: any = [];
-  add: any;
-  add1: boolean;
-  medicines = [
-    { "name": "blue inhaler", "desc": "Use it throughout the day", "toggleswitch": "No" },
-    { "name": "brown inhaler", "desc": "Use it at the beginning and end of everyday", "toggleswitch": "No" }
-  ];
-  userLogin = [{"username:": "test", "password:": "test" }];
+  constructor(private storage: Storage, private alertController: AlertController) { }
 
-  constructor(public alertController: AlertController, private route: Router) { }
-  //Imports keywords using async and allows an alert to be created to warn of incorrect Username/Password being entered
-  async alertPresent() {
-    const alert = await this.alertController.create({
-      header: "Alert",
-      subHeader: "Incorrect Username/Password",
-      message: "Please make sure that you enter a valid username and password combination",
-      buttons: ['Dismiss']
-    });
 
-    await alert.present();
-    let result = await alert.onDidDismiss();
-    console.log(result);
+  //Saves items to a determined location (represented by location) and a set value (determined by value))
+  onSave(location, value) {
+    this.storage.set(location, value)
+
 
   }
 
-
-
-  //Saving User Logins to the userLogins array
-  saveUserLogin(logins) {
-    localStorage.setItem("userLogins", JSON.stringify(logins));
-
-  }
-  //Retrieving User Logins from the userLogins array
-  retrieveUserLogin() {
-    this.retrieveData = localStorage.getItem("userLogins");
-    this.userLogin = JSON.parse(this.retrieveData);
-    console.log("This is the retrieve function being called: ", this.userLogin);
+  //Retrieves items from a determined location (represented by location) and a set value (determined by the result)
+  onRetrieve(location, result) {
+    this.storage.get(location).then((result) => {
+    })
   }
 
-  validation() {
-
-  }
-  //Checks if user login details are valid
+  //Allow the user to logon
   async onLogin() {
-    this.counter = 0;
-    this.retrieveUserLogin()
-    console.log("This is user Login: ", this.userLogin)
-    for (let i of this.userLogin) {
+    this.counter = 0
+    this.onRetrieve("userLogins", this.userLogins)
+    if (this.userLogins.length == 0) {
+      this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
+    }
+    else {
+      for (let i of this.userLogins) {
+        //Checks whether login information provided is correct and whether user should be logged on
+        if (i["username"] == this.inputtedUsername) {
+          if (i["password"] == this.inputtedPassword) {
+            //If user logon is correct the user is saved to a currentUser profile which has all of that specific user's settings
+            this.onRetrieve("currentUser", this.currentUser)
+            this.currentUser=[i]
+            console.log("This is current user: ", i)
+            this.onSave("currentUser", this.currentUser)
+            this.onRetrieve("currentUser", this.currentUser)
+            this.activeUser = true;
+            this.onSave("activeUser", this.activeUser)
+            console.log(this.activeUser)
 
-      if (i["username"] == this.inputtedUsername) {
-        if (i["password"] == this.inputtedPassword) {
-          console.log("Gained entry")
-          this.profile.push(i)
-          console.log("This is profile: ", this.profile)
-          this.saveItem(this.profile)
-          console.log("Profile has been saved")
-          //window.location.reload()
-          console.log(this.profile["Medication"])
-          console.log(i["Medication"])
-          this.tab1PageRoot()
+          }
+          else {
+            //Checks if alert has already been processed (due to iteration of loop)
+            if (this.counter != 1) {
+              this.counter = this.counter + 1
+              this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
+            }
 
-
-          //Stores currentuser on local storage to allow ease of access for which user is operating the application
-          //localStorage.setItem("currentUser", this.username);
-          //this.displayProfile()
+          }
         }
+
         else {
+          //Checks if alert has already been processed (due to iteration of loop)
           if (this.counter != 1) {
             this.counter = this.counter + 1
-            this.alertPresent();
+            this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
           }
-
-        }
-      }
-
-      else {
-        if (this.counter != 1) {
-          this.counter = this.counter + 1
-          this.alertPresent();
         }
 
 
 
       }
     }
+
   }
 
-tab1PageRoot(){
-    this.route.navigate(['./tab1'])
-  }
-  //Allows Alert to be used as Sign Up box
-  async presentSignUp() {
-    this.add1 = false;
+  //Sign Up Alert Box
+  async signUpAlert() {
     const alert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Sign Up',
@@ -147,7 +115,7 @@ tab1PageRoot(){
         role: 'cancel',
         handler: () => {
           console.log('Confirm Cancel');
-          this.determine = 'Cancel';
+          this.decision = 'Cancel';
         }
       },
       {
@@ -155,79 +123,68 @@ tab1PageRoot(){
         role: 'Ok',
         handler: () => {
           console.log('Confirm Ok');
-          this.determine = 'Ok';
+          this.decision = 'Ok';
+
         }
       }
       ],
-
-    });
+    })
     await alert.present();
     let result = await alert.onDidDismiss();
-    console.log(result);
-    console.log("This is the role: " + result.data.values.uName);
-    console.log("This is previous userLogin :", this.userLogin)
-    this.retrieveUserLogin()
-
-    console.log("This is the first userLogins ", this.userLogin);
-    for (let element of this.userLogin) {
-      console.log("Element speaking: ", element)
-      console.log(element["username"])
-      console.log(result.data.values.uName)
-      if (element["username"] == result.data.values.uName) {
-        this.add1 = true;
-      }
-    }
-    if (this.determine == "Ok" && this.add1 != true) {
+    console.log("This is result inside:", result);
+    //Checks whether a user exists then adds it to the userLogins array if it doesn't
+    this.checkUserExists(result)
+    this.addingUserLogin(result)
+  }
+  //Adds a user login to the userLogins array
+  addingUserLogin(result) {
+    if (this.decision == "Ok" && this.add == true) {
       let prof: any = new Object();
       prof["username"] = result.data.values.uName;
       prof["password"] = result.data.values.pWord;
       prof["dob"] = result.data.values.dob;
       prof["Medication"] = [];
       prof["trackedMedicine"] = [];
-      this.userLogin.push(prof);
-      this.saveUserLogin(this.userLogin);
-      this.retrieveUserLogin();
-      console.log("This is the updated userLogins ", this.userLogin);
+      this.onRetrieve("userLogins", this.userLogins)
+      this.userLogins.push(prof);
+      this.onSave("userLogins", this.userLogins)
+      this.onRetrieve("userLogins", this.userLogins)
+      this.alertPresent("Sign Up Complete", "Registration successful", "You can now login by using your username and password in the respective boxes")
+      console.log("This is after sign up alert: ", this.userLogins)
     }
-    else {
-      this.invalidLoginDetails()
+  }
 
+  //Checking whether a user exists before adding them to the user Login list is updated
+  checkUserExists(result) {
+    this.onRetrieve("userLogins", this.userLogins)
+    if (this.userLogins.length != 0) {
+      for (let element of this.userLogins) {
+        if (element["username"] == result.data.values.uName) {
+          this.add = false;
+
+        }
+
+      }
     }
-    console.log("NOT UPDATE USER LOGINS", this.userLogin)
-
-
-
+    if (this.add == false) {
+      this.alertPresent("Alert", "Username already exists", "Please choose another username to sign up as someone nabbed the other one!")
+    }
+  }
+  //Whole present signUp function
+  presentSignUp() {
+    this.add = true;
+    this.signUpAlert()
   }
 
-  //Saves Item to local storage, depending on the profile that is entered into it
-  saveItem(profile) {
 
-    localStorage.setItem("currentUser", JSON.stringify(profile));
-    console.log("This is the profile to be saved: ", console.log(profile))
-  }
 
-  //Retrieves data from the local storage depending on the profile that is present
-  retrieveItem() {
-    this.retrieveData = localStorage.getItem("currentUser");
-    this.test2 = JSON.parse(this.retrieveData);
-    console.log(this.test2);
-  }
-  disappear() {
-    document.getElementById('loginscreen').hidden = true;
-  };
-  deleteUserData() {
-    this.profile = []
-    console.log(this.profile)
-    this.userLogin = []
-    this.saveUserLogin(this.userLogin)
-    this.retrieveUserLogin()
-    console.log("This is the user Logins", this.userLogin)
-  }
-  async invalidLoginDetails() {
+
+  //Generic alert set up, which can have modified headers, subHeaders, msg's depending on user preference
+  async alertPresent(header, subHeader, msg) {
     const alert = await this.alertController.create({
-      header: "Alert",
-      subHeader: "Username already taken",
-      message: "This username has already been taken, please try another username",
+      header: header,
+      subHeader: subHeader,
+      message: msg,
       buttons: ['Dismiss']
     });
 
@@ -236,11 +193,59 @@ tab1PageRoot(){
     console.log(result);
 
   }
+
+  onLogOut() {
+    this.activeUser = false;
+    this.delete = false;
+    this.onRetrieve("currentUser", this.currentUser);
+    this.onRetrieve("userLogins", this.userLogins)
+    console.log("This is the userLogins after retrieved", this.userLogins)
+    console.log("This is the currentUser after retrieved", this.currentUser)
+
+    for (let element of this.userLogins) {
+      for (let section of this.currentUser) {
+        if (element["username"] == section["username"]) {
+          console.log("They are the same!!!!")
+          element["username"] = section["username"]
+          element["password"] = section["password"]
+          element["dob"] = section["dob"]
+          element["Medication"] = section["Medication"]
+          element["trackedMedicine"] = section["trackedMedicine"]
+          console.log("User logins after update: ", this.userLogins)
+          this.onSave("userLogins", this.userLogins)
+          this.delete = true
+        }
+      }
+    }
+
+
+    console.log("User Logins after: ", this.userLogins)
+    this.deletecurrentUser()
+
+    this.onSave("currentUser", this.currentUser)
+    this.onRetrieve("currentUser", this.currentUser)
+
+  }
+  deletecurrentUser() {
+    this.onRetrieve("currentUser", this.currentUser)
+    console.log("Inside deletion: ", this.currentUser)
+    this.currentUser=[{"username": "", "password": "", "section": "", "Medication": [], "trackedMedicine":[]}]
+    console.log(this.currentUser)
+    this.onSave("currentUser", this.currentUser)
+    this.onRetrieve("currentUser", this.currentUser)
+    console.log("This is the current user: ", this.currentUser)
+    /*if (this.delete == true) {
+      for (let section of this.currentUser) {
+        console.log(section)
+        section["username"] = "";
+        section["password"] = "";
+        section["dob"] = "";
+        section["Medication"] = [];
+        section["trackedMedicine"] = []
+      }
+    }*/
+  }
   ngOnInit() {
-    console.log("THIS IS ON INITIALISATION")
-    console.log(this.userLogin)
-    this.saveUserLogin(this.userLogin)
-    this.testArray = ["apples", "pears"]
   }
 
 }

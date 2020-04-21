@@ -1,27 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Platform, ModalController } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { LoginPage } from './login/login.page';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss']
 })
-export class AppComponent {
-  retrieveData: any;
-  user: any = [];
-  user1: any;
-  authentication: any;
-  backdropDismiss: false;
-  loginModal: HTMLIonModalElement;
+export class AppComponent implements OnInit {
+  public selectedIndex = 0;
+  public appPages = [
+    {
+      title: 'Profile',
+      url: 'login',
+      icon: 'person'
+    },
+    {
+      title: 'Medication',
+      url: 'medication',
+      icon: 'medkit'
+    },
+    {
+      title: 'Tracker',
+      url: 'tracker',
+      icon: 'analytics'
+    },
+    {
+      title: 'Help',
+      url: 'help',
+      icon: 'help-circle'
+    }
+  ];
+
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
-    private modalCtrl: ModalController
+    private statusBar: StatusBar
   ) {
     this.initializeApp();
   }
@@ -30,43 +47,14 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.retrieveItem();
-
     });
-
-
   }
 
-  retrieveItem() {
-    this.retrieveData = localStorage.getItem("currentUser");
-    console.log(this.retrieveData)
-    this.user1 = JSON.parse(this.retrieveData);
-    this.user.push(this.user1)
-    console.log("This is current user: ", this.user);
-    this.displayLogin()
-
-  }
-
-  displayLogin() {
-    console.log(this.user)
-    for (let element of this.user) {
-      if (element["username"] == "") {
-        this.modalCtrl.create({
-          component: LoginPage,
-          backdropDismiss: false,
-        }).then(modal => {
-          this.loginModal = modal;
-          modal.present();
-        });
-
-
-
-      }
-      else {
-        if (this.loginModal) {
-          this.loginModal.dismiss();
-        }
-      }
+  ngOnInit() {
+    const path = '/login'
+    console.log("This is path: ", path)
+    if (path !== undefined) {
+      this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
   }
 }
