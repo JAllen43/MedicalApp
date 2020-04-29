@@ -18,7 +18,10 @@ import{IonicStorageModule} from'@ionic/storage';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot({
+      name:'_myDb',
+      driverOrder: ['localstorage']
+    })
   ],
   providers: [
     StatusBar,

@@ -42,7 +42,7 @@
     <ion-button (click)="presentSignUp()" expand="block" size="medium">
       Register
     </ion-button>
-    <ion-button (click)='test'>TESTING</ion-button>
+    <ion-button (click)='button()'>Retrieve Active User</ion-button>
   </div>
 
   <div *ngIf="activeUser == true" id="profileScreen">
@@ -88,6 +88,7 @@
 
       </ion-list>
     </ion-item>
+    <ion-button (click)='button()'>Retrieve Active User</ion-button>
     <ion-button (click)="onLogOut()" color="danger" expand="block" size="large">
       Log Out
     </ion-button>

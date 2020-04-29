@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { Router, NavigationExtras } from '@angular/router'
+import { Router, NavigationExtras } from '@angular/router';
+import {GlobalConstants} from '../global-constants';
 
 @Component({
   selector: 'app-medication',
@@ -18,11 +19,47 @@ export class MedicationPage implements OnInit {
   lock: boolean;
   saveArray: any = [];
   counter: number;
+  activeUser: boolean;
 
-  constructor(private storage: Storage, private alertController: AlertController, private router: Router) { }
+  constructor(private storage: Storage, private alertController: AlertController, private route: Router) { }
 
   ngOnInit() {
-    this.retrieveAndSetMedication()
+    this.activeUser = GlobalConstants.activeUser;
+    console.log("ACTIVE USER: ", this.activeUser)
+    this.currentUser=GlobalConstants.currentUser
+    console.log("CURRENT USER: ", this.currentUser)
+    
+    if (this.activeUser == false) {
+      this.alertPresentLogin("Alert", "Please login", "To access all the features of the application you will need to sign up for an account and login! Please do this by following the link!")
+    }
+    else{
+      this.retrieveAndSetMedication()
+    }
+    
+
+  }
+  //Redirects the user to the login screen
+  goToLogin() {
+    this.route.navigate(['login'])
+  }
+  async alertPresentLogin(header, subHeader, msg) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: header,
+      subHeader: subHeader,
+      message: msg,
+      buttons: [{
+        text: 'Go to login page',
+        role: "login",
+        handler: () => {
+          console.log("Confirming login press")
+          this.goToLogin()
+        },
+      }]
+    });
+
+    await alert.present();
+    let result = await alert.onDidDismiss();
 
   }
 
@@ -33,14 +70,9 @@ export class MedicationPage implements OnInit {
 
   //Used to retrieve information from the user profile and set it to the medication to be displayed on the screen
   async retrieveAndSetMedication() {
-    this.storage.get("currentUser").then((result) => {
-      this.currentUser = result
-    })
-
-    await this.delay(50);
-
     for (let element of this.currentUser) {
       this.medication = element["Medication"]
+      console.log(element["Medication"])
     }
   }
 
@@ -128,9 +160,9 @@ export class MedicationPage implements OnInit {
         for (let element of this.currentUser) {
           element["Medication"] = this.medication
         }
-        this.onSave("currentUser", this.currentUser)
       }
     }
+    console.log("This is updated GC: ", GlobalConstants.currentUser)
   }
 
   //Alert for signing up new drug
@@ -166,13 +198,14 @@ export class MedicationPage implements OnInit {
         special: med
       }
     };
-    this.router.navigate(['details'], navigationExtras);
+    this.route.navigate(['details'], navigationExtras);
   }
 
   //On the add button being pressed it adds the intended medication to the trackedmedicine array
   onAddPress(med) {
-    this.onRetrieveCurrentUser()
+    console.log("GC: ", GlobalConstants.currentUser)
     this.lock = true;
+    console.log("med ", med)
     for (let element of this.medication) {
       if (med == element["name"]) {
         for (let section of this.currentUser) {
@@ -181,15 +214,19 @@ export class MedicationPage implements OnInit {
               this.lock = false
             }
           }
+          console.log("ELEMENT: ", element)
           if (this.lock == true) {
-            section["trackedMedicine"].push(element)
-            this.onSaveCurrentUser()
+            section["trackedMedicine"]=element
+            console.log("SECTION TRACKEDMED: ",section["trackedMedicine"])
+            
           }
         }
       }
     }
+    GlobalConstants.currentUser=this.currentUser
+    console.log("Updated GC: ", GlobalConstants.currentUser)
     this.onSaveCurrentUser()
-    this.onRetrieveCurrentUser()
+    
   }
 
   //Removes relevant medication from the current user's medication list and profile

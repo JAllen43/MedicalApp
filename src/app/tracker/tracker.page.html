@@ -22,7 +22,7 @@
     </ion-card-header>
     <ion-card-content>
       {{drug.desc}}
-      <ion-item>{{drug}}</ion-item><!--
+      <ion-item>{{drug}}</ion-item>
       <h1>{{time | async}}</h1>
 
       <div display="none">
@@ -35,19 +35,12 @@
         </ion-datetime>
         <ion-button (click)="datetime()">Load</ion-button>
         <ion-button (click)="saveInputtedTime(drug.name)">Final Test</ion-button>
-      </ion-item>-->
+      </ion-item>
       
     </ion-card-content>
   </ion-card>
-  <ion-button (click)="scheduleNotif(1)"> schedulNotif </ion-button>
-
-
-
-
-
-
-  <ion-button (click)="updateItems()">Update Tracker List</ion-button>
   
+  <ion-button (click)="userLogins1()">Retrieve User Logins</ion-button>
 
 
 
