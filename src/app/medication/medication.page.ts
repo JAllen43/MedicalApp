@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router, NavigationExtras } from '@angular/router';
-import {GlobalConstants} from '../global-constants';
+import { GlobalConstants } from '../global-constants';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-medication',
@@ -20,23 +21,39 @@ export class MedicationPage implements OnInit {
   saveArray: any = [];
   counter: number;
   activeUser: boolean;
+  index1: number;
+  remove: any = [];
+  currentImage: any;
 
-  constructor(private storage: Storage, private alertController: AlertController, private route: Router) { }
+  constructor(private storage: Storage, private alertController: AlertController, private route: Router, private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.activeUser = GlobalConstants.activeUser;
-    console.log("ACTIVE USER: ", this.activeUser)
-    this.currentUser=GlobalConstants.currentUser
-    console.log("CURRENT USER: ", this.currentUser)
-    
+    this.currentUser = GlobalConstants.currentUser;
     if (this.activeUser == false) {
       this.alertPresentLogin("Alert", "Please login", "To access all the features of the application you will need to sign up for an account and login! Please do this by following the link!")
     }
-    else{
+    else {
       this.retrieveAndSetMedication()
     }
-    
 
+
+  }
+
+  //Action that occurs if the user clicks the checkmark button on a medication that has already been added to the tracked list.
+  confirmation() {
+    this.presentToast("This medication has already been added to the tracker, go to the Tracker screen to see it!")
+  }
+
+  //Show message about Medication being added to tracker screen for 3 seconds
+  async presentToast(msg) {
+    let toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom'
+    });
+
+    toast.present()
   }
   //Redirects the user to the login screen
   goToLogin() {
@@ -52,7 +69,6 @@ export class MedicationPage implements OnInit {
         text: 'Go to login page',
         role: "login",
         handler: () => {
-          console.log("Confirming login press")
           this.goToLogin()
         },
       }]
@@ -72,7 +88,6 @@ export class MedicationPage implements OnInit {
   async retrieveAndSetMedication() {
     for (let element of this.currentUser) {
       this.medication = element["Medication"]
-      console.log(element["Medication"])
     }
   }
 
@@ -140,8 +155,9 @@ export class MedicationPage implements OnInit {
       let newEntry: any = new Object();
       newEntry["name"] = result.data.values.drugName;
       newEntry["desc"] = result.data.values.drugDesc;
-      newEntry["togglestate"] = false
+      newEntry["drugstate"] = false
       newEntry["timerTime"] = new Date();
+      newEntry["picture"] = this.currentImage;
       //Checks whether this medicine is a duplicate or has no name, in which case an alert will be activated
       for (let med of this.medication) {
         if (newEntry["name"] == med["name"] || newEntry["name"] == "") {
@@ -162,7 +178,7 @@ export class MedicationPage implements OnInit {
         }
       }
     }
-    console.log("This is updated GC: ", GlobalConstants.currentUser)
+
   }
 
   //Alert for signing up new drug
@@ -203,47 +219,191 @@ export class MedicationPage implements OnInit {
 
   //On the add button being pressed it adds the intended medication to the trackedmedicine array
   onAddPress(med) {
-    console.log("GC: ", GlobalConstants.currentUser)
+    this.currentUser = GlobalConstants.currentUser
+
+
+
     this.lock = true;
-    console.log("med ", med)
+
     for (let element of this.medication) {
+
+
       if (med == element["name"]) {
+
         for (let section of this.currentUser) {
-          for (let part of section["trackedMedicine"]) {
-            if (med == part["name"]) {
-              this.lock = false
-            }
+          GlobalConstants.counter = section["listFull"]
+
+          if (GlobalConstants.counter == 0) {
+
+            section["trackedMedicine"] = element
+            this.presentToast("Medication was added to your Tracker screen")
+            GlobalConstants.counter = 1
+            section["listFull"] = GlobalConstants.counter
+
+            element["drugstate"] = true
           }
-          console.log("ELEMENT: ", element)
-          if (this.lock == true) {
-            section["trackedMedicine"]=element
-            console.log("SECTION TRACKEDMED: ",section["trackedMedicine"])
-            
+          else {
+
+            this.presentToast("This medication can't be added as there is already a medication in the tracker list!")
+
           }
+
         }
       }
     }
-    GlobalConstants.currentUser=this.currentUser
-    console.log("Updated GC: ", GlobalConstants.currentUser)
+    GlobalConstants.currentUser = this.currentUser
     this.onSaveCurrentUser()
-    
+
+  }
+  //Remove the medication that is in the tracked array from the Tracker screen/array
+  async removeTracked(med) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'WARNING',
+      message: 'Are you sure that you want to remove this medication from the tracked list? Your time settings for this drug will be deleted.',
+      //Sets up "Yes" and "No" Buttons to have desired effect when clicked on
+      buttons: [{
+
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.decision = false;
+        }
+      },
+      {
+        text: "Yes",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.decision = true;
+        }
+      }
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    if (this.decision == true) {
+    for (let element of this.currentUser) {
+      for (let section of [element["trackedMedicine"]]) {
+        if (med == section["name"]) {
+          this.index1 = [element["trackedMedicine"]].indexOf(section)
+
+          this.remove = [element["trackedMedicine"]]
+          this.remove.splice(this.index1, 1)
+
+          element["trackedMedicine"] = this.remove
+
+          GlobalConstants.counter = 0
+          element["listFull"] = GlobalConstants.counter
+        }
+      }
+      for (let section of element["Medication"]) {
+        if (med == section["name"]) {
+          section["drugstate"] = false
+
+        }
+      }
+      GlobalConstants.currentUser = this.currentUser
+    }
+    this.presentToast("This medication has been removed from your tracked list")}
   }
 
   //Removes relevant medication from the current user's medication list and profile
-  removeMed(med) {
-    this.onRetrieveCurrentUser()
-    for (let element of this.currentUser) {
-      for (let section of element["Medication"]) {
-        if (section["name"] == med) {
-          this.index = element["Medication"].indexOf(section);
-          element["Medication"].splice(this.index, 1);
-          this.medication = element["Medication"];
+  async removeMed(med) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'WARNING',
+      message: 'Are you sure that you want to remove this medication? This will remove all of the data of this medication (including tracked data) from the application.',
+      //Sets up "Yes" and "No" Buttons to have desired effect when clicked on
+      buttons: [{
+
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.decision = false;
+        }
+      },
+      {
+        text: "Yes",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.decision = true;
         }
       }
-      for (let i of this.currentUser) {
-        i["Medication"] = element["Medication"]
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+
+    console.log("AFTER ALERT")
+    if (this.decision == true) {
+      console.log("Decision is: ", this.decision)
+
+      for (let element of this.currentUser) {
+        for (let section of element["Medication"]) {
+          if (section["name"] == med) {
+            this.index = element["Medication"].indexOf(section);
+            element["Medication"].splice(this.index, 1);
+            this.medication = element["Medication"];
+          }
+        }
+        for (let section of [element["trackedMedicine"]]) {
+          if (med == section["name"]) {
+            this.index1 = [element["trackedMedicine"]].indexOf(section)
+            this.remove = [element["trackedMedicine"]]
+            this.remove.splice(this.index1, 1)
+            element["trackedMedicine"] = this.remove
+            GlobalConstants.counter = 0
+            element["listFull"] = GlobalConstants.counter
+          }
+        }
+
+        for (let i of this.currentUser) {
+          i["Medication"] = element["Medication"]
+          i["trackedMedicine"] = element["trackedMedicine"]
+          i["listFull"] = element["listFull"]
+        }
       }
+
+      GlobalConstants.currentUser = this.currentUser
+      this.onSaveCurrentUser()
     }
-    this.onSaveCurrentUser()
+  }
+
+  //Presents an alert to check whether user wants to execute an action or not
+  async actionConfirmation(msg) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'New Drug',
+      message: msg,
+      //Sets up "Yes" and "No" Buttons to have desired effect when clicked on
+      buttons: [{
+
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.decision = false;
+        }
+      },
+      {
+        text: "Yes",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.decision = true;
+        }
+      }
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+
   }
 }

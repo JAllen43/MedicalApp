@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color='tertiary'>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
@@ -8,17 +8,38 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>
+  <ion-card color='light'>
+    <ion-card-header >
+      <ion-card-title style='color: #3399ff'>
         Drug Description
       </ion-card-title>
 
     </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        {{data}}
+    <ion-card-content style='color: #3399ff'>
+      <ion-item color='light'>
+        <ion-text color='tertiary'>{{data}} </ion-text>
       </ion-item>
     </ion-card-content>
   </ion-card>
+
+  <ion-card color='light'>
+    <ion-card-header >
+      <ion-card-title style='color: #3399ff'>
+        Drug Picture
+      </ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content style='color: #3399ff'>
+      <ion-item color='light'>
+    <img [src]="currentImage" *ngIf="currentImage">
+  </ion-item>
+     
+    </ion-card-content>
+  </ion-card>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed" >
+    <ion-fab-button color='light' (click)="takePicture()">
+      <ion-icon name="camera" color='tertiary'></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  
 </ion-content>

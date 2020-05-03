@@ -1,16 +1,18 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
-      <ion-content>
+      <ion-content color='tertiary'>
         <ion-list id="inbox-list">
-          <ion-list-header>Medicine Tracker</ion-list-header>
-          <ion-note>Track your meds using this app</ion-note>
+          <ion-list-header style='color: white'>Medicine Tracker</ion-list-header>
+          <ion-note style='color: white'>Track your meds using this app</ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i">
-              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+            <div id="menucolor">
+            <ion-item (click)="selectedIndex = i" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" [class.selected]="selectedIndex == i" style="color: white">
+              <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'" style=' color: white'></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
+          </div>
           </ion-menu-toggle>
         </ion-list>
 

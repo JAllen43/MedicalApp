@@ -1,0 +1,135 @@
+<ion-header>
+  <ion-toolbar color='tertiary'>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Back</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Adding Medication to the Application</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+      <div id="paragraph">
+          <p style='color:#3399ff'>This button allows you to add medication to the application along with a description of what it is and how
+          often you should be taking it.
+        </p>
+        
+      </div>
+      <ion-button expand="block" size="large" color='light'>
+        <ion-text color='tertiary'>
+          <h4>Add Medicine</h4>
+        </ion-text>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Remove Medicine from the app</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+
+      <ion-item color='light'>
+        <ion-button size="large" color="danger">
+          <ion-icon size="large" name="trash-outline"></ion-icon>
+        </ion-button>
+        <div id="paragraph">
+          <p style="color: #3399ff"> This allows you to remove the medicine from the application completely. If it is in
+            the tracker screen it will also be removed from there also.
+          </p>
+        </div>
+      </ion-item>
+    </ion-card-content>
+
+
+  </ion-card>
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Information Button</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+
+      <ion-item color='light'>
+        <ion-button size="large">
+          <ion-icon size="large" name="information-circle-outline"></ion-icon>
+        </ion-button>
+
+        <div id="paragraph">
+          <p style="color: #3399ff"> Pressing this button will display a description of the drug that it is listed under
+          </p>
+        </div>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Adding Medicine to your Tracker</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+      <ion-item color='light'>
+
+        <div id="toggle">
+          <ion-button size='large'>
+            <ion-icon size="large" name="analytics-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div id="paragraph">
+
+          <p style="color: #3399ff"> To add the relevant medicine to your Tracker, this toggle switch will need to be
+            tapped upon so that
+            it
+            turns blue <br />
+            Items that appear in your tracked list can be used to set a timer and reminders of when medication is
+            required
+            to be taken
+          </p>
+
+        </div>
+
+      </ion-item>
+
+    </ion-card-content>
+
+
+  </ion-card>
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Removing Medicine from your Tracker</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+      <ion-item color='light'>
+
+        <div id="toggle">
+          <ion-button size='large' color="success">
+            <ion-icon size="large" name="analytics-outline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <div id="paragraph">
+
+          <p style="color: #3399ff"> To remove the medication that you have added to the tracker list, tap on the green
+            analytics symbol and it will be removed for you. WARNING: All this drug's timer data will be lost!
+          </p>
+
+        </div>
+
+      </ion-item>
+
+    </ion-card-content>
+
+
+  </ion-card>
+
+
+</ion-content>

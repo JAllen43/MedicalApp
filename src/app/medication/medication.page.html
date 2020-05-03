@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color='tertiary'>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -14,38 +14,63 @@
     </ion-toolbar>
   </ion-header>
 
+  <div id="Warning" *ngIf="activeUser==false">
+    <h4 style='color: white'> To use this feature you need to create or login to an account on the Profile page</h4>
+  </div>
 
-  <div id="container">
+  <div id="real-content" *ngIf="activeUser==true">
 
-    <ion-item *ngFor="let med of medication">
-      <div id="medicine">
-        {{med.name}}
-      </div>
-      <div id="Remove Button">
-        <ion-button size="large" (click)="removeMed(med.name)" color="danger">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-button>
-      </div>
+    <!--<ion-item >-->
+    <ion-card *ngFor="let med of medication" color='light'>
+      <ion-card-header>
+        <ion-card-title style='color: #3399ff'>
 
-      <div id="I-Button">
-        <ion-button size="large" (click)="onInfoPress(med.name)">
-          <ion-icon name="information-circle-outline"></ion-icon>
+          {{med.name}}
 
-        </ion-button>
-      </div>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <div id="Remove Button">
+                <ion-button size="large" (click)="removeMed(med.name)" color="danger">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-col>
+            <ion-col>
+              <div id="I-Button">
+                <ion-button color='tertiary' size="large" (click)="onInfoPress(med.desc)">
+                  <ion-icon name="information-circle-outline"></ion-icon>
 
-      <div id="Add-Button">
-        <ion-button size="large" (click)="onAddPress(med.name)">
-          <ion-icon name="add-circle-outline"></ion-icon>
-        </ion-button>
-        <!--<ion-button *ngIf="med.togglestate==true" size="large" color="success" (click)="togglebutton(med.togglestate)">
-          <ion-icon name="checkmark-circle-outline"></ion-icon>
-        </ion-button>-->
-      </div>
+                </ion-button>
+              </div>
+            </ion-col>
+            <ion-col>
+              <div id="Add-Button">
+                <ion-button *ngIf='med.drugstate === false' size="large" (click)="onAddPress(med.name)"
+                  color='tertiary'>
+                  <ion-icon name="analytics-outline"></ion-icon>
+                </ion-button>
 
-    </ion-item>
-
-    <ion-button (click)="newDrug()" expand="block" size="large">Add new medicine</ion-button>
+                <ion-button *ngIf='med.drugstate === true' size="large" (click)="removeTracked(med.name)"
+                  color="success">
+                  <ion-icon name="analytics-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+    <div id="button">
+      <ion-button (click)="newDrug()" expand="block" size="large" color='light'>
+        <ion-text color='tertiary'>
+          <h4>Add new medicine</h4>
+        </ion-text>
+      </ion-button>
+    </div>
   </div>
 
 </ion-content>

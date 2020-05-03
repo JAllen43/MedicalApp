@@ -4,6 +4,8 @@ import { AlertController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { GlobalConstants } from '../global-constants';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import {ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-tracker',
@@ -13,7 +15,7 @@ import { GlobalConstants } from '../global-constants';
 export class TrackerPage implements OnInit {
   currentUser: any = [];
   displayArray: any = [];
-  userLogins: any=[];
+  userLogins: any = [];
   inputHours: any;
   inputMinutes: any;
   inputSeconds: any;
@@ -34,29 +36,59 @@ export class TrackerPage implements OnInit {
   interval;
   activeUser: boolean;
   backdropDismiss: false;
+  countdownTime = new Date();
+  drugName: string;
+  activeTimer: boolean;
+  index: number;
+  remove: any=[];
+  counter: number;
+  decision: boolean;
 
-  constructor(private storage: Storage, private alertController: AlertController, private route: Router) { }
+  constructor(private storage: Storage, private alertController: AlertController, private route: Router, private localNotifications: LocalNotifications, private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.onRetrieve("activeUser", this.activeUser)
     this.activeUser = GlobalConstants.activeUser;
-    console.log("ACTIVE USER: ", this.activeUser)
-    this.currentUser=GlobalConstants.currentUser
-    console.log("CURRENT USER: ",this.currentUser)
-    for (let element of this.currentUser){
-      this.displayArray=[element["trackedMedicine"]]
+    this.currentUser = GlobalConstants.currentUser
+    this.countdownTime = GlobalConstants.countdownTime
+    this.counter=GlobalConstants.counter
+
+    for (let element of this.currentUser) {
+      this.activeTimer = element["activeTimer"]
+      
+      this.displayArray = [element["trackedMedicine"]]
+      for (let section of [element["trackedMedicine"]]) {
+     
+      }
     }
-    console.log("DISPLAY ARRAY: ",this.displayArray)
+
     if (this.activeUser == false) {
       this.alertPresent("Alert", "Please login", "To access all the features of the application you will need to sign up for an account and login! Please do this by following the link!")
     }
-    //this.retrieveAndSetMedication()
+    if (this.activeTimer == true) {
+      for (let element of this.displayArray) {
+        this.drugName=element["name"]
+        this.inputtedTime=element["timerTime"]
+
+        this.onClick(this.drugName)
+
+      }
+
+    }
   }
-//Redirects the user to the login screen
+  //Redirects the user to the login screen
   goToLogin() {
     this.route.navigate(['login'])
   }
+  //Set up local notification with custom message
+  Notification(msg) {
+    this.localNotifications.schedule({
+      id: 1,
+      text: msg,
+    })
+  }
 
+  //Alert set up to be presented with custom header, subheader and message
   async alertPresent(header, subHeader, msg) {
     const alert = await this.alertController.create({
       backdropDismiss: false,
@@ -67,7 +99,7 @@ export class TrackerPage implements OnInit {
         text: 'Go to login page',
         role: "login",
         handler: () => {
-          console.log("Confirming login press")
+ 
           this.goToLogin()
         },
       }]
@@ -85,30 +117,14 @@ export class TrackerPage implements OnInit {
   onSave(location, value) {
     this.storage.set(location, value)
   }
+
   //Delay function that can be used for a time interval
   async delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  //retrieve tracked medicine to be set onto the page
-  async retrieveAndSetMedication() {
-    console.log("This should be happening first!")
-    this.storage.get("currentUser").then((result) => {
-      this.currentUser = result
-      console.log("Inside retrieval: ", this.currentUser)
 
-
-    })
-    console.log("Hello", this.currentUser)
-    await this.delay(50);
-    for (let element of this.currentUser) {
-      this.displayArray = element["trackedMedicine"]
-      console.log(this.displayArray)
-    }
-
-
-
-  }
+  //Calculates seconds needed to start countdown
   calculateTime() {
     //Calculates Hours/Minutes required for the timer to function
     this.inputHours = this.inputtedTime
@@ -152,37 +168,47 @@ export class TrackerPage implements OnInit {
     }
 
     this.startDuration = (this.inputHours * 3600) + (this.inputMinutes * 60) + (this.inputSeconds)
+    for (let element of this.currentUser) {
+      for (let section of [element["trackedMedicine"]]) {
+        section["timerTime"] = this.inputtedTime
+      }
+    }
+    GlobalConstants.currentUser = this.currentUser
+    
   }
 
+  //On Button being clicked the timer is started
   onClick(name) {
-    //this.saveInputtedTime(name)
+    for (let element of this.currentUser) {
+      element["activeTimer"] = true
+    }
+ 
+    GlobalConstants.currentUser = this.currentUser
+    this.drugName = name
+    
     this.calculateTime()
     this.state = 'start';
-    this.startTimer(this.startDuration);
-    //this.delay(1000)
+    this.startTimer(this.startDuration, this.drugName);
+    this.delay(1000)
   }
-  startTimer(startDuration) {
+  async startTimer(startDuration, name) {
 
     this.timer = startDuration;
-    console.log("This is the timer: ", this.timer)
-    this.updateTimeValue();
+   
+    this.updateTimeValue(name);
     while (this.timer > 0) {
-      this.delay(1000)
-      this.updateTimeValue()
+      await this.delay(1000)
+      this.updateTimeValue(name)
     }
-    //this.delay(1000)
-    //setInterval(() => {
-    // this.updateTimeValue();
-
-    // }, 1000);
-
   }
+  //Stops the timer when actioned
   stopTimer() {
     this.state = 'stop';
     this.time.next('00:00:00')
 
   }
-  updateTimeValue() {
+  //Updates the timer value countdown time
+  updateTimeValue(name) {
     this.hours = this.timer / 3600;
 
     this.hours = Math.floor(this.hours)
@@ -196,7 +222,7 @@ export class TrackerPage implements OnInit {
     if (this.minutes == 60) {
       this.minutes = 59
       this.hours = this.hours - 1
-      console.log("Gone through")
+ 
     }
 
 
@@ -204,33 +230,21 @@ export class TrackerPage implements OnInit {
 
 
 
-    //hours1 = String('0' + hour1).slice(-2);
+
     this.minutes = String('0' + Math.floor(this.minutes)).slice(-2);
     seconds = String('0' + seconds).slice(-2);
 
-    //if (seconds>9){
-    // seconds=String(seconds)
-    // }
-    //else{
-    //seconds=String("0"+seconds)
-    //}
-    console.log("This is the hours: ", this.hours)
+
     if (this.state == 'start') {
       const text = this.hours + ":" + this.minutes + ':' + seconds;
-      console.log(text)
+  
       this.time.next(text);
-      //console.log(seconds)
       this.timer = this.timer - 1;
-      this.delay(1000)
-
-
-
     }
 
-
-    if (this.timer < 0) {
-      this.startTimer(this.startDuration)
-
+    if (this.timer <= 0) {
+      this.Notification("Time to take your " + name + " medication!")
+      this.startTimer(86400, name)
     }
 
 
@@ -239,18 +253,70 @@ export class TrackerPage implements OnInit {
 
 
   }
- async userLogins1(){
-    this.retrieve()
-    await this.delay(50)
-    console.log("USER LOGINS: ", this.userLogins)
-  }
-  retrieve(){
-    this.storage.get("userLogins").then((result) => {
-      this.delay(10000)
-      this.userLogins=result
-      
-      
 
-    })
+//Removes a medication from the tracked list
+ async removeTracked(med) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'WARNING',
+      message: 'Are you sure that you want to remove this medication from the tracked list? Your time settings for this drug will be deleted.',
+      //Sets up "Yes" and "No" Buttons to have desired effect when clicked on
+      buttons: [{
+
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.decision = false;
+        }
+      },
+      {
+        text: "Yes",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.decision = true;
+        }
+      }
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    if (this.decision == true) {
+    for (let element of this.currentUser) {
+      for (let section of [element["trackedMedicine"]]) {
+        if (med == section["name"]) {
+          this.index = [element["trackedMedicine"]].indexOf(section)
+          this.remove = [element["trackedMedicine"]]
+          this.remove.splice(this.index, 1)
+          element["trackedMedicine"] = this.remove
+          this.displayArray=this.remove
+          GlobalConstants.counter = 0
+          element["listFull"] = GlobalConstants.counter
+          this.counter=GlobalConstants.counter
+        }
+      }
+      for (let section of element["Medication"]) {
+        if (med == section["name"]) {
+          section["drugstate"] = false
+
+        }
+      }
+      GlobalConstants.currentUser=this.currentUser
+    }
+
+    this.presentToast("This medication has been removed from your tracked list")}
+  }
+
+  //Show message about Medication being added to tracker screen for 3 seconds
+  async presentToast(msg) {
+    let toast = await this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+      position: 'bottom'
+    });
+
+    toast.present()
   }
 }

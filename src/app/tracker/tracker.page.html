@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color='tertiary'>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -13,34 +13,33 @@
       <ion-title size="large">Tab 3</ion-title>
     </ion-toolbar>
   </ion-header>
-
-
-  <ion-card *ngFor="let drug of displayArray">
-    <ion-card-header>
+  <div id="Warning" *ngIf='counter != 1'>
+    <h4 style='color:white'>To use this screen add a medication to your tracked list on the "Medication screen"</h4>
+  </div>
+  <div id="Main Body" *ngIf='counter == 1'>
+  <ion-card *ngFor="let drug of displayArray" color='light'>
+    <ion-card-header style='color: #3399ff'>
       <ion-card-title>{{drug.name}}</ion-card-title>
       <ion-card-subtitle>Description</ion-card-subtitle>
     </ion-card-header>
-    <ion-card-content>
-      {{drug.desc}}
-      <ion-item>{{drug}}</ion-item>
+    <ion-card-content style='color: #3399ff'>
+      <p>{{drug.desc}}</p>
       <h1>{{time | async}}</h1>
-
-      <div display="none">
-        <ion-button *ngIf="state === 'stop'" (click)="onClick(drug.name)">Start</ion-button>
-        <ion-button *ngIf="state === 'start'" (click)="stopTimer()">Stop</ion-button>
-      </div>
-      <ion-item>
-        <ion-label> Tap here to enter medication time</ion-label>
-        <ion-datetime [(ngModel)]="inputtedTime" display-format="HH:mm" picker-format="HH:mm" value="00:00">
+      <ion-item color='light'>
+        <ion-label style='color: #3399ff'> Tap here to enter medication time</ion-label>
+        <ion-datetime [(ngModel)]="inputtedTime" display-format="HH:mm" picker-format="HH:mm" value="00:00" color='tertiary'>
         </ion-datetime>
-        <ion-button (click)="datetime()">Load</ion-button>
-        <ion-button (click)="saveInputtedTime(drug.name)">Final Test</ion-button>
+        
+      </ion-item>
+      <ion-item color='light'>
+        <ion-button (click)="onClick(drug.name)" color='tertiary' expand='block' size='large'>Update</ion-button>
+        <ion-button (click)="removeTracked(drug.name)" color="danger" expand='block' size='large'>Remove</ion-button>
       </ion-item>
       
     </ion-card-content>
   </ion-card>
+  </div>
   
-  <ion-button (click)="userLogins1()">Retrieve User Logins</ion-button>
 
 
 

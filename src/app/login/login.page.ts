@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AlertController } from '@ionic/angular';
 import { GlobalConstants } from '../global-constants';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+
 
 
 
@@ -23,6 +25,8 @@ export class LoginPage implements OnInit {
   activeUser: boolean;
   delete = false;
   updateCurrentUser: any = [];
+  currentImage: any;
+  determine: boolean;
 
 
   constructor(private storage: Storage, private alertController: AlertController) { }
@@ -34,7 +38,7 @@ export class LoginPage implements OnInit {
 
 
   }
-  save(value){
+  save(value) {
     this.storage.set("userLogins", value)
   }
 
@@ -46,89 +50,76 @@ export class LoginPage implements OnInit {
 
   //Allow the user to logon
   onLogin() {
-    this.counter = 0
-    //this.onRetrieveUserLogins()
-    this.userLogins=GlobalConstants.userLogins
-    console.log("USER LOGIONS!!! ", this.userLogins)
+    this.counter = 1
+    this.userLogins = GlobalConstants.userLogins
     this.save(this.userLogins)
-    try{
+    try {
       if (this.userLogins.length == 0) {
-      this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you sign up for an accountenter a valid username and password combination");
-    }
-    
-    else {
-      for (let i of this.userLogins) {
-        //Checks whether login information provided is correct and whether user should be logged on
-        if (i["username"] == this.inputtedUsername) {
-          if (i["password"] == this.inputtedPassword) {
-            //If user logon is correct the user is saved to a currentUser profile which has all of that specific user's settings
-            this.onRetrieve("currentUser", this.currentUser)
-            this.currentUser = [i]
-            console.log("This is current user: ", i)
-            this.onSave("currentUser", this.currentUser)
-            GlobalConstants.currentUser = this.currentUser
-            console.log("This is GC: ", GlobalConstants.currentUser)
-            this.onRetrieve("currentUser", this.currentUser)
-            this.activeUser = true;
-            GlobalConstants.activeUser = this.activeUser
-            this.counter = 0
-            break
-
-          }}}}}
-          catch(Error){
-      
-    }
-         /* else {
-            //Checks if alert has already been processed (due to iteration of loop)
-            if (this.counter != 1) {
-              this.counter = 1
-              this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
-            }
-
-          }
-        }
-
-        else {
-          //Checks if alert has already been processed (due to iteration of loop)
-          if (this.counter != 1) {
-            this.counter = this.counter + 1
-            this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
-          }
-        }
-
-
-*/
-      
-    
-      console.log("Loop broken")
-      console.log("Counter is: ", this.counter)
-      if (this.counter != 0) {
-        this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
+        this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you sign up for an accountenter a valid username and password combination");
+        this.counter = 0
       }
 
+      else {
+        for (let i of this.userLogins) {
+          //Checks whether login information provided is correct and whether user should be logged on
+          if (i["username"] == this.inputtedUsername) {
+            if (i["password"] == this.inputtedPassword) {
+              //If user logon is correct the user is saved to a currentUser profile which has all of that specific user's settings
+              this.onRetrieve("currentUser", this.currentUser)
+              this.currentUser = [i]
+
+              this.onSave("currentUser", this.currentUser)
+              GlobalConstants.currentUser = this.currentUser
+
+              this.onRetrieve("currentUser", this.currentUser)
+              this.activeUser = true;
+              GlobalConstants.activeUser = this.activeUser
+              this.counter = 0
+              break
+
+            }
+          }
+        }
+      }
+    }
+    catch (Error) {
+
     }
 
-  
+    if (this.counter == 1) {
+      this.alertPresent("Alert", "Incorrect Username/Password", "Please make sure that you enter a valid username and password combination");
+    }
+
+  }
+
+
 
   //Sign Up Alert Box
   async signUpAlert() {
     const alert = await this.alertController.create({
       backdropDismiss: false,
       header: 'Sign Up',
+      subHeader: 'Please enter a username, password and your date of birth below: ',
       inputs: [
+
         {
+          id: "Username",
+          label: 'Username',
           name: 'uName',
           type: 'text',
-          placeholder: 'Placeholder 1'
+          placeholder: 'Create your username'
         },
         {
+          label: 'Password',
           name: 'pWord',
           type: 'text',
-          placeholder: 'Placeholder2'
+          placeholder: 'Create your password'
         },
         {
+          label: 'Date of Birth',
           name: 'dob',
           type: 'date',
+          placeholder: '2000-01-01',
           min: '2017-03-01',
           max: '2018-01-12'
         }
@@ -155,53 +146,59 @@ export class LoginPage implements OnInit {
     })
     await alert.present();
     let result = await alert.onDidDismiss();
-    console.log("This is result inside:", result);
-    this.userLogins=GlobalConstants.userLogins
+
+    this.userLogins = GlobalConstants.userLogins
     //Checks whether a user exists then adds it to the userLogins array if it doesn't
     this.checkUserExists(result)
     this.addingUserLogin(result)
   }
-  button(){
-    this.onRetrieveUserLogins()
-    console.log("USER LOGINS: ", this.userLogins)
-  }
-  onRetrieveUserLogins(){
-    this.storage.get("userLogins").then((result) => {
-      this.userLogins=result
-    })
 
+  //Retrieves User Logins
+  onRetrieveUserLogins() {
+    this.storage.get("userLogins").then((result) => {
+      this.userLogins = result
+    })
   }
-  onSaveUserLogins(){
+
+
+  //Saves User Logins 
+  onSaveUserLogins() {
     this.storage.set("userLogins", this.userLogins)
   }
+
+
   //Adds a user login to the userLogins array
   addingUserLogin(result) {
-    if (this.decision == "Ok" && this.add == true) {
+    if (this.decision == "Ok" && this.add == true && result.data.values.pWord !="") {
       let prof: any = new Object();
       prof["username"] = result.data.values.uName;
       prof["password"] = result.data.values.pWord;
       prof["dob"] = result.data.values.dob;
       prof["Medication"] = [];
       prof["trackedMedicine"] = [];
+      prof["listFull"] = 0
+      prof["activeTimer"] = false
       this.onRetrieve("userLogins", this.userLogins)
       this.userLogins.push(prof);
-      this.userLogins=this.userLogins
+      this.userLogins = this.userLogins
       this.onSaveUserLogins()
-      console.log("USER LOGINS V2: ", this.userLogins)
-      GlobalConstants.userLogins=this.userLogins
+
+      GlobalConstants.userLogins = this.userLogins
       this.alertPresent("Sign Up Complete", "Registration successful", "You can now login by using your username and password in the respective boxes")
-      console.log("This is after sign up alert: ", this.userLogins)
+
+    }
+    else{
+      this.alertPresent("Invalid Password", "Registration unsuccessful","Please enter a valid password")
     }
   }
 
   //Checking whether a user exists before adding them to the user Login list is updated
   checkUserExists(result) {
     this.onRetrieveUserLogins()
-    console.log("PRE USERLOGINS ", this.userLogins)
-    //if (this.userLogins.length != 0) {
-      try{ 
-        for (let element of this.userLogins) {
-          console.log("This worked")
+
+    try {
+      for (let element of this.userLogins) {
+
         if (element["username"] == result.data.values.uName) {
           this.add = false;
 
@@ -209,13 +206,15 @@ export class LoginPage implements OnInit {
 
       }
     }
-    catch(Error){
+    catch (Error) {
 
     }
     if (this.add == false) {
       this.alertPresent("Alert", "Username already exists", "Please choose another username to sign up as someone nabbed the other one!")
     }
   }
+
+
   //Whole present signUp function
   presentSignUp() {
     this.add = true;
@@ -236,32 +235,54 @@ export class LoginPage implements OnInit {
 
     await alert.present();
     let result = await alert.onDidDismiss();
-    console.log(result);
-
   }
 
+  //Log Out function saving the current user's settings to the userLogins array
   async onLogOut() {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      header: 'WARNING',
+      message: 'Are you sure that you want to log out of the application?',
+      //Sets up "Yes" and "No" Buttons to have desired effect when clicked on
+      buttons: [{
+
+        text: 'No',
+        role: 'cancel',
+        handler: () => {
+          console.log('Confirm Cancel');
+          this.determine = false;
+        }
+      },
+      {
+        text: "Yes",
+        role: 'Ok',
+        handler: () => {
+          console.log('Confirm Ok');
+          this.determine = true;
+        }
+      }
+      ],
+
+    });
+    await alert.present();
+    let result = await alert.onDidDismiss();
+    if (this.determine == true) {
     this.activeUser = false;
     GlobalConstants.activeUser = this.activeUser
     this.currentUser = GlobalConstants.currentUser
-    console.log("Current USER TO BE SAVED :", this.currentUser)
     this.delete = false;
     this.onRetrieveUserLogins()
     await this.delay(1000)
     this.onRetrieve("userLogins", this.userLogins)
-    console.log("This is the userLogins after retrieved", this.userLogins)
-    console.log("This is the currentUser after retrieved", this.currentUser)
 
     for (let element of this.userLogins) {
       for (let section of this.currentUser) {
         if (element["username"] == section["username"]) {
-          console.log("They are the same!!!!")
           element["username"] = section["username"]
           element["password"] = section["password"]
           element["dob"] = section["dob"]
           element["Medication"] = section["Medication"]
           element["trackedMedicine"] = section["trackedMedicine"]
-          console.log("User logins after update: ", this.userLogins)
           this.onSave("userLogins", this.userLogins)
           this.delete = true
         }
@@ -269,46 +290,38 @@ export class LoginPage implements OnInit {
     }
 
 
-    console.log("User Logins after: ", this.userLogins)
+
+
+
+
+
     this.deletecurrentUser()
 
     this.onSave("currentUser", this.currentUser)
-    this.onRetrieve("currentUser", this.currentUser)
+    this.onRetrieve("currentUser", this.currentUser)}
 
   }
 
+  //Deletes the current user from the system
   deletecurrentUser() {
     this.onRetrieve("currentUser", this.currentUser)
-    console.log("Inside deletion: ", this.currentUser)
+
     this.currentUser = [{ "username": "", "password": "", "section": "", "Medication": [], "trackedMedicine": [] }]
-    console.log(this.currentUser)
+
     this.onSave("currentUser", this.currentUser)
     this.onRetrieve("currentUser", this.currentUser)
-    console.log("This is the current user: ", this.currentUser)
-    /*if (this.delete == true) {
-      for (let section of this.currentUser) {
-        console.log(section)
-        section["username"] = "";
-        section["password"] = "";
-        section["dob"] = "";
-        section["Medication"] = [];
-        section["trackedMedicine"] = []
-      }
-    }*/
+
   }
 
 
   ngOnInit() {
-   // if(GlobalConstants.startup ==false){
-      
-  //  }
-    
     this.activeUser = GlobalConstants.activeUser;
     this.currentUser = GlobalConstants.currentUser;
-    GlobalConstants.startup= false;
     this.delay(1000)
-    console.log("This is active user on init: ", this.activeUser)
+
   }
+
+  //Delay set up
   async delay(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }

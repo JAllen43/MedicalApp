@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color='tertiary'>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -8,67 +8,131 @@
 </ion-header>
 
 <ion-content>
-  <h2> Please find some pointers on how to use the app below:</h2>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Information Button</ion-card-title>
+  <h2 style="color:white"> Please click on a relevant link to go to that page's help page!</h2>
+  <div *ngIf="state==false">
+    <!-- Login page help-->
+    <ion-card color="light">
+      <ion-card-header style='color: #3399ff'>
+        <ion-card-title>Login Page</ion-card-title>
 
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-button size="large">
-          <ion-icon size="large" name="information-circle-outline"></ion-icon>
-        </ion-button>
-        <div id="paragraph">
-          <p> Pressing this button will display a description of the drug that it is listed under</p>
-        </div>
-      </ion-item>
+      </ion-card-header>
+      <ion-card-content color='light'>
 
-    </ion-card-content>
-  </ion-card>
-  <ion-card>
-    <ion-card-header>
+        <ion-item color='light'>
+          <ion-button size="large" color="tertiary" expand="block" (click)="goToLoginHelp()">See Login help</ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <div *ngIf="state==true">
+    <!--Profile Help-->
+    <ion-card color="light">
+      <ion-card-header style='color: #3399ff'>
+        <ion-card-title>Profile Page</ion-card-title>
+
+      </ion-card-header>
+      <ion-card-content color='light'>
+
+        <ion-item color='light'>
+          <ion-button size="large" color="tertiary" expand="block" (click)="goToProfileHelp()">See Profile help
+          </ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!--Medication Help-->
+    <ion-card color="light">
+      <ion-card-header style='color: #3399ff'>
+        <ion-card-title>Medication Page</ion-card-title>
+
+      </ion-card-header>
+      <ion-card-content color='light'>
+
+        <ion-item color='light'>
+          <ion-button size="large" color="tertiary" expand="block" (click)="goToMedHelp()">See Medication help
+          </ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!--Details Help-->
+    <ion-card color="light">
+      <ion-card-header style='color: #3399ff'>
+        <ion-card-title>Details Page</ion-card-title>
+
+      </ion-card-header>
+      <ion-card-content color='light'>
+
+        <ion-item color='light'>
+          <ion-button size="large" color="tertiary" expand="block" (click)="goToDetailsHelp()">See Details help
+          </ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!--Tracker Help-->
+    <ion-card color="light">
+      <ion-card-header style='color: #3399ff'>
+        <ion-card-title>Tracker Page</ion-card-title>
+
+      </ion-card-header>
+      <ion-card-content color='light'>
+
+        <ion-item color='light'>
+          <ion-button size="large" color="tertiary" expand="block" (click)="goToTrackerHelp()">See Tracker help
+          </ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  <!--
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
       <ion-card-title>Adding Medicine to your Tracker</ion-card-title>
 
     </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-          
-            <div id="toggle">
-              <ion-toggle color="primary"></ion-toggle>
-            </div>
+    <ion-card-content color='light'>
+      <ion-item color='light'>
 
-          <div id="paragraph">
-            
-              <p> To add the relevant medicine to your Tracker, this toggle switch will need to be tapped upon so that
-                it
-                turns blue <br />
-                Items that appear in your tracked list can be used to set a timer and reminders of when medication is
-                required
-                to be taken
-              </p>
-            
-          </div>
+        <div id="toggle">
+          <ion-button size='large'>
+            <ion-icon size="large" name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </div>
 
-        </ion-item>
-      
+        <div id="paragraph">
+
+          <p style="color: #3399ff"> To add the relevant medicine to your Tracker, this toggle switch will need to be
+            tapped upon so that
+            it
+            turns blue <br />
+            Items that appear in your tracked list can be used to set a timer and reminders of when medication is
+            required
+            to be taken
+          </p>
+
+        </div>
+
+      </ion-item>
+
     </ion-card-content>
 
 
   </ion-card>
-  <ion-card>
-    <ion-card-header>
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
       <ion-card-title>Remove Medicine</ion-card-title>
 
     </ion-card-header>
-    <ion-card-content>
+    <ion-card-content color='light'>
 
-      <ion-item>
+      <ion-item color='light'>
         <ion-button size="large" color="danger">
           <ion-icon size="large" name="trash-outline"></ion-icon>
         </ion-button>
         <div id="paragraph">
-          <p> This allows you to remove the medicine from the relevant screen, whether it be deleting an entry after
+          <p style="color: #3399ff"> This allows you to remove the medicine from the relevant screen, whether it be
+            deleting an entry after
             finishing a course of medication or removing it from the application completely
           </p>
         </div>
@@ -76,6 +140,7 @@
     </ion-card-content>
 
 
-  </ion-card>
+  </ion-card>-->
+
 
 </ion-content>

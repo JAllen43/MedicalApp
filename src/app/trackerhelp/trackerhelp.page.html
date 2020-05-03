@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar color='tertiary'>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Back</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1 style="color: white">Tracker Page Help</h1>
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Setting a Medication Time</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+      <ion-item color='light'>
+        Tap on the location to enter a time and press 'Ok' to confirm this selection
+      </ion-item>
+      <ion-item color='light'>
+
+        <ion-label style='color: #3399ff'> Tap here to enter medication time</ion-label>
+        <ion-datetime [(ngModel)]="inputtedTime" display-format="HH:mm" picker-format="HH:mm" value="00:00"
+          color='tertiary'>
+        </ion-datetime>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="light">
+    <ion-card-header style='color: #3399ff'>
+      <ion-card-title>Updating the Tracker TimeRemove Medicine from the app</ion-card-title>
+
+    </ion-card-header>
+    <ion-card-content color='light'>
+      <ion-item color='light'>
+        To update the medication time, you need to make sure to press the "Update Time" button which will consquently
+        start a countdown timer, failure to do this means the timer will not start!
+      </ion-item>
+      <ion-item color='light'>
+        <ion-button expand="block" size="large" color='tertiary'>
+          <ion-text>
+            <h2 style='color: white'>Update Time</h2>
+          </ion-text>
+        </ion-button>
+
+      </ion-item>
+
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

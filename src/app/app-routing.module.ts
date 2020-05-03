@@ -26,6 +26,26 @@ const routes: Routes = [
   {
     path: 'details',
     loadChildren: () => import('./details/details.module').then( m => m.DetailsPageModule)
+  },
+  {
+    path: 'medicationhelp',
+    loadChildren: () => import('./medicationhelp/medicationhelp.module').then( m => m.MedicationhelpPageModule)
+  },
+  {
+    path: 'loginhelp',
+    loadChildren: () => import('./loginhelp/loginhelp.module').then( m => m.LoginhelpPageModule)
+  },
+  {
+    path: 'trackerhelp',
+    loadChildren: () => import('./trackerhelp/trackerhelp.module').then( m => m.TrackerhelpPageModule)
+  },
+  {
+    path: 'profilehelp',
+    loadChildren: () => import('./profilehelp/profilehelp.module').then( m => m.ProfilehelpPageModule)
+  },
+  {
+    path: 'detailshelp',
+    loadChildren: () => import('./detailshelp/detailshelp.module').then( m => m.DetailshelpPageModule)
   }
 ];
 

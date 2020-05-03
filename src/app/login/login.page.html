@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color='tertiary'>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
@@ -13,36 +13,55 @@
       <ion-title size="large">Home</ion-title>
     </ion-toolbar>
   </ion-header>
+  
   <div *ngIf="activeUser == false" id="loginscreen">
 
-    <h2> Welcome to this application to track your Medication</h2>
-    <h2>Please login below or Register for an account!</h2>
-    <h3>Please note if you do not login you may not have access to certain features of the app!</h3>
+    <div id="message" style="color: white; text-align: justify;">
+      <h4> Welcome to this application to track your Medication</h4>
+      <h4>Please login below or Register for an account!</h4>
+
+    </div>
+    <ion-card color="light">
+      <ion-card-header>
+        <ion-card-title style='color: #3399ff'>Username</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item color='light'>
+          <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername" color='tertiary'>
+          </ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card color="light">
+      <ion-card-header>
+        <ion-card-title style='color: #3399ff'>
+          Password
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item color='light'>
+          <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword" color='tertiary'>
+
+          </ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <div id="buttons">
+      <ion-button (click)="onLogin()" expand="block" size="large" color='light'>
+        <ion-text color='tertiary'>
+          <h4>Login</h4>
+        </ion-text>
+      </ion-button>
 
 
-    <h2>Username</h2>
-    <ion-item>
-      <ion-input type="text" placeholder="Enter your Username" [(ngModel)]="inputtedUsername">
-      </ion-input>
-    </ion-item>
-    <h2>Password</h2>
-    <ion-item>
-      <ion-input type="password" placeholder="Enter your password" [(ngModel)]="inputtedPassword">
-
-      </ion-input>
-    </ion-item>
-
-
-
-    <ion-button (click)="onLogin()" expand="block" size="medium">
-      Login
-    </ion-button>
-
-
-    <ion-button (click)="presentSignUp()" expand="block" size="medium">
-      Register
-    </ion-button>
-    <ion-button (click)='button()'>Retrieve Active User</ion-button>
+      <ion-button (click)="presentSignUp()" expand="block" size="large" color='light'>
+        <ion-text color='tertiary'>
+          <h4>Register</h4>
+        </ion-text>
+      </ion-button>
+    </div>
   </div>
 
   <div *ngIf="activeUser == true" id="profileScreen">
@@ -50,47 +69,53 @@
       <ion-list>
 
         <div>
-          <ion-card>
-            <ion-card-header>
+          <ion-card color='light'>
+            <ion-card-header style='color: #3399ff'>
               <ion-title>
                 Username
               </ion-title>
               <ion-card-subtitle>
-                To modify your username click on your username below, type your new one in and press the save button!
+                This it the current Username that you entered on Sign up:
               </ion-card-subtitle>
             </ion-card-header>
 
             <ion-card-content>
+              <ion-item color='light'>
+                <h4 style='color:#3399ff'>{{element.username}}</h4>
+              </ion-item>
 
-              <ion-input type="text" placeholder={{element.username}}>
 
-              </ion-input>
             </ion-card-content>
           </ion-card>
         </div>
-        <ion-card>
-          <ion-card-header>
-            <ion-title>
-              Password
+        <ion-card color='light'>
+          <ion-card-header style='color: #3399ff'>
+            <ion-title horizontal="center">
+              Date of Birth
             </ion-title>
             <ion-card-subtitle>
-              To modify your password click on your password below, type your new one in and press the save button!
+              This it the current Date of Birth that you entered on Sign up:
             </ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
 
-            <ion-input type="password" placeholder="Enter old password here"></ion-input>
-            <ion-input type="password" placeholder="Enter new password here"></ion-input>
+            <ion-item color='light'>
+              <h4 style='color:#3399ff'>{{element.dob}}</h4>
+            </ion-item>
 
           </ion-card-content>
         </ion-card>
 
       </ion-list>
     </ion-item>
-    <ion-button (click)='button()'>Retrieve Active User</ion-button>
+    <ion-item>
+      <h4 style='color: white'>Don't forget to use the Help screen if you get stuck in the application!</h4>
+    </ion-item>
     <ion-button (click)="onLogOut()" color="danger" expand="block" size="large">
       Log Out
     </ion-button>
   </div>
+
+
 </ion-content>
